@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  node-app:
+    build: .
+    depends_on:
+      - postgresdb
+    image: node-app
+    environment:
+      - DATABASE_URL=postgresql://user228:secret@postgresdb:5432/mydb?schema=public
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/node-app
+    networks:
+      - node-network
+
+  postgresdb:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=mydb
+      - POSTGRES_USER=user228
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - '5433:5432'
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - node-network
+
+volumes:
+  dbdata:
+    driver: local
+
+networks:
+  node-network:
+    driver: bridge
