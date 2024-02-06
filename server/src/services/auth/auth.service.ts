@@ -11,7 +11,7 @@ import jwt from "jsonwebtoken";
 class AuthService {
     async login({email, password}: AuthLoginDto): Promise<string | undefined> {
         try {
-            if(!email && !password) {
+            if(!email || !password) {
                 throw new BadRequestError();
             }
 

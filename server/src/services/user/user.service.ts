@@ -7,10 +7,15 @@ import UserErrorMessage from "../../common/errors/messages/user-error-message";
 import jwt from 'jsonwebtoken';
 import UserCreateResponseDto from "../../common/types/user/user.create.response.dto";
 import { expireTimeInMilliseconds } from "../../common/constants/token.constants";
+import BadRequestError from "../../common/errors/bad-request-error";
 
 class UserService {
     async create({email, password}: User): Promise<UserCreateResponseDto | undefined> {
         try {
+            if(!email || !password) {
+                throw new BadRequestError();
+            }
+
             const existingUser = await prisma.user.findUnique({
                 where: {
                     email: email
