@@ -19,7 +19,14 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Token     Token[]
+  Auction   Auction[]
 }
+
+enum Role {
+  USER
+  ADMIN
+}
+
 
 model Token {
   id        Int      @id @default(autoincrement())
@@ -30,7 +37,19 @@ model Token {
   userId    Int      @unique
 }
 
-enum Role {
-  USER
-  ADMIN
+
+model Auction {
+  id           Int      @id @default(autoincrement())
+  startPrice   Int      @default(0)
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       Int
+  AuctionPhoto AuctionPhoto[]
+}
+
+model AuctionPhoto {
+  id             Int         @id @default(autoincrement())
+  photoLink      String
+  auction        Auction     @relation(fields: [auctionId], references: [id])
+  auctionId      Int
 }
