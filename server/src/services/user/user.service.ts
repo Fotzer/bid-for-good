@@ -11,11 +11,12 @@ import { expireTimeInMilliseconds } from "../../common/constants/token.constants
 class UserService {
     async create({email, password}: User): Promise<UserCreateResponseDto | undefined> {
         try {
-            const existingUser = await prisma.user.findFirst({
+            const existingUser = await prisma.user.findUnique({
                 where: {
                     email: email
                 }
             });
+            
 
             if(existingUser) {
                 throw new ConflictError(UserErrorMessage.alreadyExists);
