@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const PasswordValidator = z
+export const passwordValidator = z
   .string()
   .regex(new RegExp(".*[A-Z].*"), { message: "One uppercase character" })
   .regex(new RegExp(".*[a-z].*"), { message: "One lowercase character" })
