@@ -1,9 +1,10 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import morgan from './config/morgan';
 import helmet from 'helmet';
 import compression from 'compression';
 import xss from './middlewares/xss';
 import cors from 'cors';
+import mainController from './controllers';
 
 const app = express();
 
@@ -24,11 +25,9 @@ app.use(compression());
 app.use(cors());
 app.options('*', cors());
 
-app.get('/', (_: Request, res: Response) => {
-  res.send('Hello World');
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/', mainController);
 
 export default app;
