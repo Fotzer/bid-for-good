@@ -10,4 +10,8 @@ authController.post("/login", async (req, res) => {
     res.send(await controllerHandleErrors(res, () => authService.login(req.body)));
 });
 
+authController.post("/sign-up", async (req, res) => {
+    res.send(await controllerHandleErrors(res, () => authService.signUp(req.body)));
+});
+
 export default authController;
