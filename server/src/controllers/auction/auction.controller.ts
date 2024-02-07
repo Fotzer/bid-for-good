@@ -5,6 +5,7 @@ import multer from 'multer';
 import transformAuctionMiddleware from '../../middlewares/auction/transform.auction';
 import betController from './bet/bet.controller';
 import auctionPhotoController from './photo/auction-photo.controller';
+import validateParamsNumberMiddleware from '../../middlewares/transform-id';
 const upload = multer();
 
 const auctionController = express.Router();
@@ -32,6 +33,7 @@ auctionController.put(
   '/:id',
   upload.single('photo'),
   transformAuctionMiddleware,
+  validateParamsNumberMiddleware(['id']),
   async (req, res) => {
     res.send(
       await controllerHandleErrors(res, () =>
@@ -50,6 +52,7 @@ auctionController.get(
   '/:id/users',
   upload.single('photo'),
   transformAuctionMiddleware,
+  validateParamsNumberMiddleware(['id']),
   async (req, res) => {
     res.send(await controllerHandleErrors(res, () => auctionService.getUsers(req.params.id)));
   }
