@@ -5,6 +5,7 @@ import verifyToken from "../../../helpers/verify-token";
 import NotFoundError from "../../../common/errors/not-found-error";
 import UserErrorMessage from "../../../common/errors/messages/user-error-message";
 import prisma from "../../../client";
+import BadRequestError from "../../../common/errors/bad-request-error";
 
 class BetService {
     async create(token: string | undefined, auctionId: string, bet: Bet) {
@@ -15,13 +16,20 @@ class BetService {
                 throw new NotFoundError(UserErrorMessage.notFound);
             }
             
-            const createdBet = await prisma.bet.create({
-                data: {
-                    ...bet,
-                    userId: userId,
-                    auctionId: Number(auctionId)
-                }
-            });
+            let createdBet;
+            try {
+                createdBet = await prisma.bet.create({
+                    data: {
+                        betValue: bet.betValue,
+                        userId: userId,
+                        auctionId: Number(auctionId)
+                    }
+                });
+            }
+            catch(e) {
+                throw new BadRequestError();
+            }
+
 
             return createdBet;
         } 
