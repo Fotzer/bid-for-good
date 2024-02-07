@@ -163,6 +163,26 @@ class AuctionService {
             }
         }
     }
+
+    async getAll() {
+        try {
+            const auctions = await prisma.auction.findMany({
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            });
+
+            return auctions;
+        } 
+        catch(e) {
+            if(e instanceof HTTPError) {
+                throw e;
+            }
+            else if(e instanceof Error) {
+                throw new InternalServerError(e.message);
+            }
+        }
+    }
 }
 
 export default AuctionService;
