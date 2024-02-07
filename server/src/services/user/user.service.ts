@@ -10,7 +10,7 @@ import { expireTimeInMilliseconds } from '../../common/constants/token.constants
 import BadRequestError from '../../common/errors/bad-request-error';
 import { passwordValidator } from '../../validators/user/password-validator';
 import { ZodError } from 'zod';
-import { userCreateJoiSchema } from '../../common/joi-schemas/user/user';
+import { userCreateJoiSchema } from '../../common/joi schemas/user/user';
 import validateSchema from '../../helpers/validate-schema';
 
 class UserService {
@@ -38,8 +38,7 @@ class UserService {
 
       const user = await prisma.user.create({
         data: {
-          email: userData.email,
-          password: userData.password
+          ...userData
         }
       });
 

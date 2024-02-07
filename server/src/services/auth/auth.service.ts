@@ -1,20 +1,21 @@
-import { User } from '@prisma/client';
-import jwt from 'jsonwebtoken';
 import prisma from '../../client';
 import { expireTimeInMilliseconds } from '../../common/constants/token.constants';
 import HTTPError from '../../common/errors/http-error';
 import InternalServerError from '../../common/errors/internal-server-error';
 import UserErrorMessage from '../../common/errors/messages/user.error.message';
 import NotFoundError from '../../common/errors/not-found-error';
-import { loginSchema } from '../../common/joi-schemas/auth/auth';
 import AuthLoginDto from '../../common/types/auth/auth.login.dto';
-import validateSchema from '../../helpers/validate-schema';
+import jwt from 'jsonwebtoken';
 import UserService from '../user/user.service';
+import { User } from '@prisma/client';
+import validateSchema from '../../helpers/validate-schema';
+import { loginSchema } from '../../common/joi schemas/auth/auth';
+import AuthLoginResponseDto from '../../common/types/auth/auth.login.response.dto';
 
 class AuthService {
   userService = new UserService();
 
-  async login(loginData: AuthLoginDto): Promise<string | undefined> {
+  async login(loginData: AuthLoginDto): Promise<AuthLoginResponseDto | undefined> {
     try {
       validateSchema(loginSchema(), loginData);
 
@@ -47,7 +48,10 @@ class AuthService {
         });
       }
 
-      return token.token;
+      return {
+        user: user,
+        token: token.token
+      };
     } catch (e) {
       if (e instanceof HTTPError) {
         throw e;

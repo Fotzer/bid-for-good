@@ -6,7 +6,7 @@ import NotFoundError from '../../../common/errors/not-found-error';
 import UserErrorMessage from '../../../common/errors/messages/user.error.message';
 import prisma from '../../../client';
 import BadRequestError from '../../../common/errors/bad-request-error';
-import { betJoiSchema } from '../../../common/joi-schemas/bet/bet';
+import { betJoiSchema } from '../../../common/joi schemas/bet/bet';
 import validateSchema from '../../../helpers/validate-schema';
 import BetErrorMessage from '../../../common/errors/messages/bet.error.message';
 
@@ -48,6 +48,16 @@ class BetService {
 
   async getHistory(auctionId: string) {
     try {
+      const auction = await prisma.auction.findUnique({
+        where: {
+          id: Number(auctionId)
+        }
+      });
+
+      if(!auction) {
+        throw new NotFoundError();
+      }
+
       const bets = await prisma.bet.findMany({
         where: {
           auctionId: Number(auctionId)

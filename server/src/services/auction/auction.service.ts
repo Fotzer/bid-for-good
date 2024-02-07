@@ -11,7 +11,7 @@ import ImageCreateResponseDto from '../../common/types/apis/freeimage/image.crea
 import {
   auctionCreateJoiSchema,
   auctionUpdateJoiSchema
-} from '../../common/joi-schemas/auction/auction';
+} from '../../common/joi schemas/auction/auction';
 import validateSchema from '../../helpers/validate-schema';
 import AuctionPhotoService from './auction-photo/auction-photo.service';
 
