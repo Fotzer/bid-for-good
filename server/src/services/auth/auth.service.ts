@@ -7,8 +7,12 @@ import UserErrorMessage from "../../common/errors/messages/user-error-message";
 import NotFoundError from "../../common/errors/not-found-error";
 import AuthLoginDto from "../../common/types/auth/auth.login.dto";
 import jwt from "jsonwebtoken";
+import UserService from "../user/user.service";
+import { User } from "@prisma/client";
 
 class AuthService {
+    userService =  new UserService;
+
     async login({email, password}: AuthLoginDto): Promise<string | undefined> {
         try {
             if(!email || !password) {
@@ -55,6 +59,10 @@ class AuthService {
                 throw new InternalServerError(e.message);
             }
         }
+    }
+
+    async signUp(data: User) {
+        return this.userService.create(data);
     }
 }
 
