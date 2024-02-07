@@ -10,11 +10,12 @@ import UserService from '../user/user.service';
 import { User } from '@prisma/client';
 import validateSchema from '../../helpers/validate-schema';
 import { loginSchema } from '../../common/joi schemas/auth/auth';
+import AuthLoginResponseDto from '../../common/types/auth/auth.login.response.dto';
 
 class AuthService {
   userService = new UserService();
 
-  async login(loginData: AuthLoginDto): Promise<string | undefined> {
+  async login(loginData: AuthLoginDto): Promise<AuthLoginResponseDto | undefined> {
     try {
       validateSchema(loginSchema(), loginData);
 
@@ -47,7 +48,10 @@ class AuthService {
         });
       }
 
-      return token.token;
+      return {
+        user: user,
+        token: token.token
+      };
     } catch (e) {
       if (e instanceof HTTPError) {
         throw e;
