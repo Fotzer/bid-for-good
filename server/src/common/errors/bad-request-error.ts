@@ -1,5 +1,5 @@
-import HTTPStatus from "../enums/http-status";
-import HTTPError from "./http-error";
+import HTTPStatus from '../enums/http-status';
+import HTTPError from './http-error';
 
 class BadRequestError extends HTTPError {
   constructor(message = HTTPStatus.BadRequest.message) {

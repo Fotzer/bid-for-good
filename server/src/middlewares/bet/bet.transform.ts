@@ -1,13 +1,13 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from 'express';
 
-function transformBetMiddleware(req: Request, res: Response, next: NextFunction): void {
-    if(req.body) {
-        if(req.body.betValue) {
-            req.body.betValue = Number(req.body.betValue);
-        }
+function transformBetMiddleware(req: Request, _: Response, next: NextFunction): void {
+  if (req.body) {
+    if (req.body.betValue) {
+      req.body.betValue = Number(req.body.betValue);
     }
+  }
 
-    next();
+  next();
 }
 
 export default transformBetMiddleware;
