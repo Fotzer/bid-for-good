@@ -22,9 +22,7 @@ class UserService {
                 passwordValidator.parse(password);
             }
             catch(e) {
-                if(e instanceof ZodError) {
-                    console.log(e);
-                    
+                if(e instanceof ZodError) {               
                     throw new BadRequestError(e.errors[0].message);
                 }
             }
