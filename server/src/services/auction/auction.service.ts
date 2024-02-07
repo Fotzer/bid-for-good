@@ -10,9 +10,12 @@ import FreeimageEndpoints from "../../apis/freeimage/freeimage.endpoints";
 import ImageCreateResponseDto from "../../common/types/apis/freeimage/image.create.dto";
 import { auctionCreateJoiSchema, auctionUpdateJoiSchema } from "../../common/joi schemas/auction/auction";
 import validateSchema from "../../helpers/validate-schema";
+import AuctionPhotoService from "./auction-photo/auction-photo.service";
 
 class AuctionService {
-    async create(token: string | undefined, auction: Auction, photo: Buffer | undefined) {
+    auctionPhotoService = new AuctionPhotoService;
+
+    async create(token: string | undefined, auction: Auction, photo: Buffer | undefined, photos: Buffer[]) {
         try {
             const auctionSchema = auctionCreateJoiSchema();
 
@@ -51,6 +54,10 @@ class AuctionService {
                         mainPhoto: data.image.url
                     }
                 });
+
+                for(const photo of photos) {
+                    this.auctionPhotoService.create(token, photo.buffer as Buffer, createdAuction.id);
+                }
 
                 return createdAuction;
             }

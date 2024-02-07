@@ -4,6 +4,7 @@ import AuctionService from "../../services/auction/auction.service";
 import multer from "multer";
 import transformAuctionMiddleware from "../../middlewares/auction/transform.auction";
 import betController from "./bet/bet.controller";
+import auctionPhotoController from "./photo/auction-photo.controller";
 const upload = multer();
 
 const auctionController = express.Router();
@@ -12,8 +13,13 @@ const auctionService = new AuctionService;
 
 auctionController.use('/', betController);
 
-auctionController.post("/", upload.single('photo'), transformAuctionMiddleware, async (req, res) => {
-    res.send(await controllerHandleErrors(res, () => auctionService.create(req.headers['authorization'], req.body, req.file?.buffer)));
+auctionController.use('/', auctionPhotoController);
+
+auctionController.post("/", upload.any(), transformAuctionMiddleware, async (req, res) => {
+    
+    console.log(req.files);
+    
+    res.send(await controllerHandleErrors(res, () => auctionService.create(req.headers['authorization'], req.body, (req.files as unknown as Buffer[])[0].buffer as Buffer, (req.files as unknown as Buffer[]).slice(1) as Buffer[])));
 });
 
 auctionController.put("/:id", upload.single('photo'), transformAuctionMiddleware, async (req, res) => {
