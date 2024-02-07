@@ -1,5 +1,5 @@
-import HTTPStatus from "../enums/http-status";
-import HTTPError from "./http-error";
+import HTTPStatus from '../enums/http-status';
+import HTTPError from './http-error';
 
 class NotFoundError extends HTTPError {
   constructor(message = HTTPStatus.NotFound.message) {

@@ -1,22 +1,23 @@
-import joi from "joi";
+import joi from 'joi';
 
 function auctionCreateJoiSchema() {
-    return joi.object({
-        startPrice: joi.number(),
-        name: joi.string().required(),
-        description: joi.string().required(),
-    }).required();
+  return joi
+    .object({
+      startPrice: joi.number(),
+      name: joi.string().required(),
+      description: joi.string().required()
+    })
+    .required();
 }
 
 function auctionUpdateJoiSchema() {
-    return joi.object({
-        startPrice: joi.number(),
-        name: joi.string(),
-        description: joi.string(),
-    }).required();
+  return joi
+    .object({
+      startPrice: joi.number(),
+      name: joi.string(),
+      description: joi.string()
+    })
+    .required();
 }
 
-export { 
-    auctionCreateJoiSchema,
-    auctionUpdateJoiSchema
-};
+export { auctionCreateJoiSchema, auctionUpdateJoiSchema };
