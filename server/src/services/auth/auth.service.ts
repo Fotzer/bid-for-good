@@ -22,7 +22,7 @@ class AuthService {
 
       const user = await prisma.user.findUnique({
         where: {
-          email: loginData.email,
+          email: loginData.email
         }
       });
 

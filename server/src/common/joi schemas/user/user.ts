@@ -5,7 +5,7 @@ function userCreateJoiSchema() {
     .object({
       email: joi.string().required(),
       name: joi.string(),
-      password: joi.string().required(),
+      password: joi.string().required()
     })
     .required();
 }

@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import HTTPError from '../common/errors/http-error';
-import UnauthorizedError from '../common/errors/unauthorized-error';
-=======
 import HTTPError from '../common/errors/http-error';
 import UnauthorizedError from '../common/errors/unauthorized-error';
 import jwt, { JwtPayload } from 'jsonwebtoken';
->>>>>>> feature/backend
 
 function verifyToken(token: string | undefined, roles: string[] | null = null) {
   if (!token) {

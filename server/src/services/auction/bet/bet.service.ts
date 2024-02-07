@@ -54,7 +54,7 @@ class BetService {
         }
       });
 
-      if(!auction) {
+      if (!auction) {
         throw new NotFoundError();
       }
 
