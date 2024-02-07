@@ -9,13 +9,17 @@ const auctionPhotoController = express.Router();
 
 const auctionPhotoService = new AuctionPhotoService();
 
-auctionPhotoController.get('/:auctionId/auction-photos', validateParamsNumberMiddleware(['auctionId']), async (req, res) => {
-  res.send(
-    await controllerHandleErrors(res, () =>
-      auctionPhotoService.getAuctionPhotos(req.params.auctionId)
-    )
-  );
-});
+auctionPhotoController.get(
+  '/:auctionId/auction-photos',
+  validateParamsNumberMiddleware(['auctionId']),
+  async (req, res) => {
+    res.send(
+      await controllerHandleErrors(res, () =>
+        auctionPhotoService.getAuctionPhotos(req.params.auctionId)
+      )
+    );
+  }
+);
 
 auctionPhotoController.post(
   '/:auctionId/auction-photos',
@@ -34,20 +38,29 @@ auctionPhotoController.post(
   }
 );
 
-auctionPhotoController.put('/auction-photos/:id', upload.single('photo'), validateParamsNumberMiddleware(['id']), async (req, res) => {
-  res.send(
-    await controllerHandleErrors(res, () =>
-      auctionPhotoService.update(req.headers['authorization']!, req.file?.buffer, req.params.id)
-    )
-  );
-});
+auctionPhotoController.put(
+  '/auction-photos/:id',
+  upload.single('photo'),
+  validateParamsNumberMiddleware(['id']),
+  async (req, res) => {
+    res.send(
+      await controllerHandleErrors(res, () =>
+        auctionPhotoService.update(req.headers['authorization']!, req.file?.buffer, req.params.id)
+      )
+    );
+  }
+);
 
-auctionPhotoController.delete('/auction-photos/:id', validateParamsNumberMiddleware(['id']), async (req, res) => {
-  res.send(
-    await controllerHandleErrors(res, () =>
-      auctionPhotoService.delete(req.headers['authorization']!, req.params.id)
-    )
-  );
-});
+auctionPhotoController.delete(
+  '/auction-photos/:id',
+  validateParamsNumberMiddleware(['id']),
+  async (req, res) => {
+    res.send(
+      await controllerHandleErrors(res, () =>
+        auctionPhotoService.delete(req.headers['authorization']!, req.params.id)
+      )
+    );
+  }
+);
 
 export default auctionPhotoController;
