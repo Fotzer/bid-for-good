@@ -3,23 +3,24 @@ import HTTPError from "../../common/errors/http-error";
 import InternalServerError from "../../common/errors/internal-server-error";
 import prisma from "../../client";
 import ConflictError from "../../common/errors/conflict-error";
-import UserErrorMessage from "../../common/errors/messages/user-error-message";
+import UserErrorMessage from "../../common/errors/messages/user.error.message";
 import jwt from 'jsonwebtoken';
 import UserCreateResponseDto from "../../common/types/user/user.create.response.dto";
 import { expireTimeInMilliseconds } from "../../common/constants/token.constants";
 import BadRequestError from "../../common/errors/bad-request-error";
 import { passwordValidator } from "../../validators/user/password-validator";
 import { ZodError } from "zod";
+import { userCreateJoiSchema } from "../../common/joi schemas/user/user";
+import validateSchema from "../../helpers/validate-schema";
 
 class UserService {
-    async create({email, password}: User): Promise<UserCreateResponseDto | undefined> {
+    async create(userData: User): Promise<UserCreateResponseDto | undefined> {
         try {
-            if(!email || !password) {
-                throw new BadRequestError();
-            }
+            validateSchema(userCreateJoiSchema(), userData);
+            
 
             try {
-                passwordValidator.parse(password);
+                passwordValidator.parse(userData.password);
             }
             catch(e) {
                 if(e instanceof ZodError) {               
@@ -29,7 +30,7 @@ class UserService {
 
             const existingUser = await prisma.user.findUnique({
                 where: {
-                    email: email
+                    email: userData.email
                 }
             });
             
@@ -40,12 +41,12 @@ class UserService {
             
             const user = await prisma.user.create({
                 data: {
-                    email: email,
-                    password: password,
+                    email: userData.email,
+                    password: userData.password,
                 }
             });
 
-            const token = jwt.sign({ email: email, userId: user.id }, process.env.JWT_SECRET!);
+            const token = jwt.sign({ email: userData.email, userId: user.id }, process.env.JWT_SECRET!);
 
             await prisma.token.create({
                 data: {

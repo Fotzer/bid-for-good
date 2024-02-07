@@ -3,13 +3,21 @@ import HTTPError from "../../../common/errors/http-error";
 import InternalServerError from "../../../common/errors/internal-server-error";
 import verifyToken from "../../../helpers/verify-token";
 import NotFoundError from "../../../common/errors/not-found-error";
-import UserErrorMessage from "../../../common/errors/messages/user-error-message";
+import UserErrorMessage from "../../../common/errors/messages/user.error.message";
 import prisma from "../../../client";
 import BadRequestError from "../../../common/errors/bad-request-error";
+import { betJoiSchema } from "../../../common/joi schemas/bet/bet";
+import validateSchema from "../../../helpers/validate-schema";
+import BetErrorMessage from "../../../common/errors/messages/bet.error.message";
 
 class BetService {
     async create(token: string | undefined, auctionId: string, bet: Bet) {
         try {
+            const betSchema = betJoiSchema();
+
+            validateSchema(betSchema, bet);
+            
+
             const userId = verifyToken(token)!.userId;
             
             if(!userId) {
@@ -27,7 +35,7 @@ class BetService {
                 });
             }
             catch(e) {
-                throw new BadRequestError();
+                throw new BadRequestError(BetErrorMessage.betValueError);
             }
 
 

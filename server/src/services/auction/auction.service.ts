@@ -5,16 +5,21 @@ import verifyToken from "../../helpers/verify-token";
 import prisma from "../../client";
 import BadRequestError from "../../common/errors/bad-request-error";
 import NotFoundError from "../../common/errors/not-found-error";
-import UserErrorMessage from "../../common/errors/messages/user-error-message";
+import UserErrorMessage from "../../common/errors/messages/user.error.message";
 import FreeimageEndpoints from "../../apis/freeimage/freeimage.endpoints";
 import ImageCreateResponseDto from "../../common/types/apis/freeimage/image.create.dto";
+import { auctionCreateJoiSchema, auctionUpdateJoiSchema } from "../../common/joi schemas/auction/auction";
+import validateSchema from "../../helpers/validate-schema";
 
 class AuctionService {
     async create(token: string | undefined, auction: Auction, photo: Buffer | undefined) {
         try {
+            const auctionSchema = auctionCreateJoiSchema();
+
+            validateSchema(auctionSchema, auction);
+
             const payload = verifyToken(token);
             
-
             const userId = payload!.userId;
 
             if(!userId) {
@@ -65,6 +70,10 @@ class AuctionService {
 
     async update(token: string | undefined, id: string, auction: Auction, photo: Buffer | undefined) {
         try {
+            const auctionSchema = auctionUpdateJoiSchema();
+
+            validateSchema(auctionSchema, auction);
+
             const payload = verifyToken(token);
 
             const userId = payload!.userId;

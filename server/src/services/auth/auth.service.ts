@@ -3,26 +3,26 @@ import { expireTimeInMilliseconds } from "../../common/constants/token.constants
 import BadRequestError from "../../common/errors/bad-request-error";
 import HTTPError from "../../common/errors/http-error";
 import InternalServerError from "../../common/errors/internal-server-error";
-import UserErrorMessage from "../../common/errors/messages/user-error-message";
+import UserErrorMessage from "../../common/errors/messages/user.error.message";
 import NotFoundError from "../../common/errors/not-found-error";
 import AuthLoginDto from "../../common/types/auth/auth.login.dto";
 import jwt from "jsonwebtoken";
 import UserService from "../user/user.service";
 import { User } from "@prisma/client";
+import validateSchema from "../../helpers/validate-schema";
+import { loginSchema } from "../../common/joi schemas/auth/auth";
 
 class AuthService {
     userService =  new UserService;
 
-    async login({email, password}: AuthLoginDto): Promise<string | undefined> {
+    async login(loginData: AuthLoginDto): Promise<string | undefined> {
         try {
-            if(!email || !password) {
-                throw new BadRequestError();
-            }
+            validateSchema(loginSchema(), loginData);
 
             const user = await prisma.user.findUnique({
                 where: {
-                    email: email,
-                    password: password
+                    email: loginData.email,
+                    password: loginData.password
                 }
             });
             
@@ -37,7 +37,7 @@ class AuthService {
             });
 
             if(!token) {
-                const tokenString = jwt.sign({ email: email }, process.env.JWT_SECRET!);
+                const tokenString = jwt.sign({ email: loginData.email }, process.env.JWT_SECRET!);
 
                 token = await prisma.token.create({
                     data: {
