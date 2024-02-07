@@ -25,8 +25,6 @@ class AuthService {
                     password: password
                 }
             });
-
-            console.log(email, password);
             
             if(!user) {
                 throw new NotFoundError(UserErrorMessage.notFound);

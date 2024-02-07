@@ -37,6 +37,7 @@ class UserService {
             if(existingUser) {
                 throw new ConflictError(UserErrorMessage.alreadyExists);
             }
+            
             const user = await prisma.user.create({
                 data: {
                     email: email,
@@ -44,7 +45,7 @@ class UserService {
                 }
             });
 
-            const token = jwt.sign({ email: email }, process.env.JWT_SECRET!);
+            const token = jwt.sign({ email: email, userId: user.id }, process.env.JWT_SECRET!);
 
             await prisma.token.create({
                 data: {

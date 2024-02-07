@@ -15,13 +15,9 @@ class AuctionService {
             const payload = verifyToken(token);
             
 
-            const user = await prisma.user.findUnique({
-                where: {
-                    email: payload!.email
-                }
-            });
+            const userId = payload!.userId;
 
-            if(!user) {
+            if(!userId) {
                 throw new NotFoundError(UserErrorMessage.notFound);
             }
             
@@ -46,7 +42,7 @@ class AuctionService {
                 const createdAuction = await prisma.auction.create({
                     data: {
                         ...auction,
-                        userId: user.id,
+                        userId: userId,
                         mainPhoto: data.image.url
                     }
                 });
@@ -71,13 +67,9 @@ class AuctionService {
         try {
             const payload = verifyToken(token);
 
-            const user = await prisma.user.findUnique({
-                where: {
-                    email: payload!.email
-                }
-            });
+            const userId = payload!.userId;
 
-            if(!user) {
+            if(!userId) {
                 throw new NotFoundError(UserErrorMessage.notFound);
             }
 
@@ -100,7 +92,7 @@ class AuctionService {
 
                     createdAuction = await prisma.auction.update({
                         where: {
-                            userId: user.id,
+                            userId: userId,
                             id: Number(id)
                         },
                         data: {
@@ -112,7 +104,7 @@ class AuctionService {
                 else {
                     createdAuction = await prisma.auction.update({
                         where: {
-                            userId: user.id,
+                            userId: userId,
                             id: Number(id)
                         },
                         data: {
