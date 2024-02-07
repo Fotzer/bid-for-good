@@ -1,11 +1,11 @@
-import joi from "joi";
+import joi from 'joi';
 
 function betJoiSchema() {
-    return joi.object({
-        betValue: joi.number()
-    }).required();
+  return joi
+    .object({
+      betValue: joi.number()
+    })
+    .required();
 }
 
-export { 
-    betJoiSchema,
-};
+export { betJoiSchema };

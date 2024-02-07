@@ -1,8 +1,8 @@
-import { User } from "@prisma/client";
+import { User } from '@prisma/client';
 
 type UserCreateResponseDto = {
-    user: User,
-    token: string
-}
+  user: User;
+  token: string;
+};
 
 export default UserCreateResponseDto;
