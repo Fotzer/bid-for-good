@@ -8,6 +8,10 @@ const auctionPhotoController = express.Router();
 
 const auctionPhotoService = new AuctionPhotoService;
 
+auctionPhotoController.get("/:auctionId/auction-photos", async (req, res) => {
+    res.send(await controllerHandleErrors(res, () => auctionPhotoService.getAuctionPhotos(req.params.auctionId)));
+});
+
 auctionPhotoController.post("/:auctionId/auction-photos", upload.single('photo'), async (req, res) => {
     res.send(await controllerHandleErrors(res, () => auctionPhotoService.create(req.headers['authorization']!, req.file?.buffer, Number(req.params.auctionId))));
 });

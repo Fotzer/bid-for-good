@@ -115,6 +115,26 @@ class AuctionPhotoService {
             }
         }
     }
+
+    async getAuctionPhotos(auctionId: string) {
+        try {
+            const photos = await prisma.auctionPhoto.findMany({
+                where: {
+                    auctionId: Number(auctionId)
+                }
+            });
+            
+            return photos;
+        } 
+        catch(e) {
+            if(e instanceof HTTPError) {
+                throw e;
+            }
+            else if(e instanceof Error) {
+                throw new InternalServerError(e.message);
+            }
+        }
+    }
 }
 
 export default AuctionPhotoService;
