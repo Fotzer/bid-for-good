@@ -30,7 +30,7 @@ class AuctionService {
                 if(!photo) {
                     throw new BadRequestError();
                 }
-                
+
                 const formData = new FormData();
                 formData.set('source', photo.toString('base64'));
                 formData.set('key', process.env.FREEIMAGE_API_KEY!);
@@ -56,6 +56,82 @@ class AuctionService {
             catch(e) {
                 throw new BadRequestError();
             }
+        } 
+        catch(e) {
+            if(e instanceof HTTPError) {
+                throw e;
+            }
+            else if(e instanceof Error) {
+                throw new InternalServerError(e.message);
+            }
+        }
+    }
+
+    async update(token: string | undefined, id: string, auction: Auction, photo: Buffer | undefined) {
+        try {
+            const payload = verifyToken(token);
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    email: payload!.email
+                }
+            });
+
+            if(!user) {
+                throw new NotFoundError(UserErrorMessage.notFound);
+            }
+
+            let createdAuction;
+
+            try {
+
+                if(photo) {
+                    const formData = new FormData();
+                    formData.set('source', photo.toString('base64'));
+                    formData.set('key', process.env.FREEIMAGE_API_KEY!);
+                    
+
+                    const response = await fetch(FreeimageEndpoints.imageUpload, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data: ImageCreateResponseDto = await response.json();
+
+                    createdAuction = await prisma.auction.update({
+                        where: {
+                            userId: user.id,
+                            id: Number(id)
+                        },
+                        data: {
+                            ...auction,
+                            mainPhoto: data.image.url
+                        }
+                    });
+                }
+                else {
+                    createdAuction = await prisma.auction.update({
+                        where: {
+                            userId: user.id,
+                            id: Number(id)
+                        },
+                        data: {
+                            ...auction
+                        }
+                    });
+                }
+                
+
+                return createdAuction;
+            }
+            catch(e) {
+                console.log(e);
+                
+                throw new BadRequestError();
+            }
+            
+
+
         } 
         catch(e) {
             if(e instanceof HTTPError) {
