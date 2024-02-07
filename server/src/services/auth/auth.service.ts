@@ -11,6 +11,7 @@ import { User } from '@prisma/client';
 import validateSchema from '../../helpers/validate-schema';
 import { loginSchema } from '../../common/joi schemas/auth/auth';
 import AuthLoginResponseDto from '../../common/types/auth/auth.login.response.dto';
+import UnauthorizedError from '../../common/errors/unauthorized-error';
 
 class AuthService {
   userService = new UserService();
@@ -22,12 +23,15 @@ class AuthService {
       const user = await prisma.user.findUnique({
         where: {
           email: loginData.email,
-          password: loginData.password
         }
       });
 
       if (!user) {
         throw new NotFoundError(UserErrorMessage.notFound);
+      }
+
+      if (user.password !== loginData.password) {
+        throw new UnauthorizedError(UserErrorMessage.wrongPassword);
       }
 
       let token = await prisma.token.findUnique({
