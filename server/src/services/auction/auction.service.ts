@@ -134,6 +134,34 @@ class AuctionService {
             }
         }
     }
+
+    async getUsers(id: string) {
+        try {
+            const users = await prisma.bet.findMany({
+                where: {
+                    auctionId: Number(id)
+                },
+                select: {
+                    user: {
+                        select: {
+                            email: true
+                        }
+                    },
+                }
+            });
+
+
+            return [...new Map(users.map(item => [item.user['email'], item])).values()];
+        } 
+        catch(e) {
+            if(e instanceof HTTPError) {
+                throw e;
+            }
+            else if(e instanceof Error) {
+                throw new InternalServerError(e.message);
+            }
+        }
+    }
 }
 
 export default AuctionService;

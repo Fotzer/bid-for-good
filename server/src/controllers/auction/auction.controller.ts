@@ -20,4 +20,8 @@ auctionController.put("/:id", upload.single('photo'), transformAuctionMiddleware
     res.send(await controllerHandleErrors(res, () => auctionService.update(req.headers['authorization'], req.params.id, req.body, req.file?.buffer)));
 });
 
+auctionController.get("/:id/users", upload.single('photo'), transformAuctionMiddleware, async (req, res) => {
+    res.send(await controllerHandleErrors(res, () => auctionService.getUsers(req.params.id)));
+});
+
 export default auctionController;
