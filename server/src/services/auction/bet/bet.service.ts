@@ -48,6 +48,16 @@ class BetService {
 
   async getHistory(auctionId: string) {
     try {
+      const auction = await prisma.auction.findUnique({
+        where: {
+          id: Number(auctionId)
+        }
+      });
+
+      if(!auction) {
+        throw new NotFoundError();
+      }
+
       const bets = await prisma.bet.findMany({
         where: {
           auctionId: Number(auctionId)
