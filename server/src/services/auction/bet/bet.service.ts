@@ -34,6 +34,29 @@ class BetService {
             }
         }
     }
+
+    async getHistory(auctionId: string) {
+        try {
+            const bets = await prisma.bet.findMany({
+                where: {
+                    auctionId: Number(auctionId)
+                },
+                orderBy: {
+                    createdAt: 'desc'   
+                }
+            });
+
+            return bets;
+        } 
+        catch(e) {
+            if(e instanceof HTTPError) {
+                throw e;
+            }
+            else if(e instanceof Error) {
+                throw new InternalServerError(e.message);
+            }
+        }
+    }
 }
 
 export default BetService;

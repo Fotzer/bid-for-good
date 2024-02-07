@@ -12,4 +12,8 @@ betController.post("/:auctionId/bets", transformBetMiddleware, async (req, res) 
     res.send(await controllerHandleErrors(res, () => betService.create(req.headers['authorization'], req.params.auctionId, req.body)));
 });
 
+betController.get("/:auctionId/bets/history", transformBetMiddleware, async (req, res) => {
+    res.send(await controllerHandleErrors(res, () => betService.getHistory(req.params.auctionId)));
+});
+
 export default betController;
