@@ -62,6 +62,16 @@ class AuctionPhotoService {
         throw new BadRequestError();
       }
 
+      const existingAuction = await prisma.auctionPhoto.findUnique({
+        where: {
+          id: Number(id)
+        },
+      });
+
+      if (!existingAuction) {
+        throw new NotFoundError();
+      }
+
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
       formData.set('key', process.env.FREEIMAGE_API_KEY!);
