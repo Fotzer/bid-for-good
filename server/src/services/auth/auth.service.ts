@@ -20,9 +20,14 @@ class AuthService {
 
   async loginByToken(token: string | undefined) {
     try {
-      const user = verifyToken(token);
+      const userId = verifyToken(token)!.userId;
 
-      return {...user, iat: undefined};
+      const user = await this.userService.get(userId);
+
+      return {
+        name: user?.name,
+        email: user?.email,
+        iat: undefined};
     } catch (e) {
       if (e instanceof HTTPError) {
         throw e;
@@ -57,7 +62,7 @@ class AuthService {
       });
 
       if (!token) {
-        const tokenString = jwt.sign({ email: loginData.email }, process.env.JWT_SECRET!);
+        const tokenString = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!);
 
         token = await prisma.token.create({
           data: {
