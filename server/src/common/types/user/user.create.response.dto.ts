@@ -1,7 +1,10 @@
 import { User } from '@prisma/client';
 
 type UserCreateResponseDto = {
-  user: User;
+  user: {
+    name: string | null,
+    email: string
+  };
   token: string;
 };
 

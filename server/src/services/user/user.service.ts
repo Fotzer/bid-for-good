@@ -57,7 +57,10 @@ class UserService {
       });
 
       return {
-        user: user,
+        user: {
+          email: user.email,
+          name: user.name
+        },
         token: token
       };
     } catch (e) {
