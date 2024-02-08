@@ -16,7 +16,7 @@ auctionPhotoController.get(
   async (req, res) => {
     res.send(
       await controllerHandleErrors(res, () =>
-        auctionPhotoService.getAuctionPhotos(req.params.auctionId)
+        auctionPhotoService.getAuctionPhotos(Number(req.params.auctionId))
       )
     );
   }
@@ -47,7 +47,7 @@ auctionPhotoController.put(
   async (req, res) => {
     res.send(
       await controllerHandleErrors(res, () =>
-        auctionPhotoService.update(req.headers['authorization']!, req.file?.buffer, req.params.id)
+        auctionPhotoService.update(req.headers['authorization']!, req.file?.buffer, Number(req.params.id))
       )
     );
   }
@@ -59,7 +59,7 @@ auctionPhotoController.delete(
   async (req, res) => {
     res.send(
       await controllerHandleErrors(res, () =>
-        auctionPhotoService.delete(req.headers['authorization']!, req.params.id)
+        auctionPhotoService.delete(req.headers['authorization']!, Number(req.params.id))
       )
     );
   }

@@ -18,6 +18,29 @@ import AuctionPhotoService from './auction-photo/auction-photo.service';
 class AuctionService {
   auctionPhotoService = new AuctionPhotoService();
 
+  async get(id: number) {
+    try {
+      const auction = await prisma.auction.findUnique({
+        where: {
+          id: id
+        }
+      });
+      
+      if (!auction) {
+        throw new NotFoundError();
+      }
+
+      return auction;
+
+    } catch (e) {
+      if (e instanceof HTTPError) {
+        throw e;
+      } else if (e instanceof Error) {
+        throw new InternalServerError(e.message);
+      }
+    }
+  }
+
   async create(
     token: string | undefined,
     auction: Auction,
@@ -78,7 +101,7 @@ class AuctionService {
     }
   }
 
-  async update(token: string | undefined, id: string, auction: Auction, photo: Buffer | undefined) {
+  async update(token: string | undefined, id: number, auction: Auction, photo: Buffer | undefined) {
     try {
       const auctionSchema = auctionUpdateJoiSchema();
 
@@ -95,7 +118,7 @@ class AuctionService {
       const existingAuction = await prisma.auction.findUnique({
         where: {
           userId: userId,
-          id: Number(id)
+          id: id
       }});
 
       if(!existingAuction) {
@@ -120,7 +143,7 @@ class AuctionService {
           createdAuction = await prisma.auction.update({
             where: {
               userId: userId,
-              id: Number(id)
+              id: id
             },
             data: {
               ...auction,
@@ -131,7 +154,7 @@ class AuctionService {
           createdAuction = await prisma.auction.update({
             where: {
               userId: userId,
-              id: Number(id)
+              id: id
             },
             data: {
               ...auction
@@ -154,11 +177,11 @@ class AuctionService {
     }
   }
 
-  async getUsers(id: string) {
+  async getUsers(id: number) {
     try {
       const users = await prisma.bet.findMany({
         where: {
-          auctionId: Number(id)
+          auctionId: id
         },
         select: {
           user: {

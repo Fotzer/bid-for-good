@@ -41,7 +41,7 @@ auctionController.put(
       await controllerHandleErrors(res, () =>
         auctionService.update(
           req.headers['authorization'],
-          req.params.id,
+          Number(req.params.id),
           req.body,
           req.file?.buffer
         )
@@ -56,7 +56,7 @@ auctionController.get(
   transformAuctionMiddleware,
   validateParamsNumberMiddleware(['id']),
   async (req, res) => {
-    res.send(await controllerHandleErrors(res, () => auctionService.getUsers(req.params.id)));
+    res.send(await controllerHandleErrors(res, () => auctionService.getUsers(Number(req.params.id))));
   }
 );
 

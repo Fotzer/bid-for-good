@@ -17,7 +17,7 @@ betController.post(
     res.statusCode = HTTPStatus.Created.status;
     res.send(
       await controllerHandleErrors(res, () =>
-        betService.create(req.headers['authorization'], req.params.auctionId, req.body)
+        betService.create(req.headers['authorization'], Number(req.params.auctionId), req.body)
       )
     );
   }
@@ -28,7 +28,7 @@ betController.get(
   validateParamsNumberMiddleware(['auctionId']),
   transformBetMiddleware,
   async (req, res) => {
-    res.send(await controllerHandleErrors(res, () => betService.getHistory(req.params.auctionId)));
+    res.send(await controllerHandleErrors(res, () => betService.getHistory(Number(req.params.auctionId))));
   }
 );
 
