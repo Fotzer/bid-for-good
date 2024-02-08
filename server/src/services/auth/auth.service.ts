@@ -25,6 +25,7 @@ class AuthService {
       const user = await this.userService.get(userId);
 
       return {
+        id: user?.id,
         name: user?.name,
         email: user?.email,
         iat: undefined};
@@ -75,6 +76,7 @@ class AuthService {
 
       return {
         user: {
+          id: user.id,
           email: user.email,
           name: user.name
         },
