@@ -13,9 +13,24 @@ import { loginSchema } from '../../common/joi schemas/auth/auth';
 import AuthLoginResponseDto from '../../common/types/auth/auth.login.response.dto';
 import UnauthorizedError from '../../common/errors/unauthorized-error';
 import { compare } from '../../helpers/bcrypt/bcrypt';
+import verifyToken from '../../helpers/verify-token';
 
 class AuthService {
   userService = new UserService();
+
+  async loginByToken(token: string | undefined) {
+    try {
+      const user = verifyToken(token);
+
+      return user;
+    } catch (e) {
+      if (e instanceof HTTPError) {
+        throw e;
+      } else if (e instanceof Error) {
+        throw new InternalServerError(e.message);
+      }
+    }
+  }
 
   async login(loginData: AuthLoginDto): Promise<AuthLoginResponseDto | undefined> {
     try {

@@ -46,7 +46,7 @@ class UserService {
         }
       });
 
-      const token = jwt.sign({ email: userData.email, userId: user.id }, process.env.JWT_SECRET!);
+      const token = jwt.sign({ email: userData.email, userId: user.id, name: user.name }, process.env.JWT_SECRET!);
 
       await prisma.token.create({
         data: {
