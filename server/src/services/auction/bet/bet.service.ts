@@ -53,7 +53,7 @@ class BetService {
           id: Number(auctionId)
         }
       });
-
+      
       if (!auction) {
         throw new NotFoundError();
       }
