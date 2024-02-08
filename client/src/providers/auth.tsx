@@ -1,6 +1,6 @@
 "use client";
 
-import { IUser, IUserSignIn } from "@/types/user";
+import { IUser, IUserSignIn, IUserSignUp } from "@/types/user";
 import {
   ReactNode,
   createContext,
@@ -16,6 +16,7 @@ import { redirect } from "next/navigation";
 interface IAuthContext {
   token: string | null;
   login: ((userDto: IUserSignIn) => Promise<IUser | null>) | null;
+  signUp: ((userDto: IUserSignUp) => Promise<IUser | null>) | null;
   logout: (() => void) | null;
   user: IUser | null;
 }
@@ -23,6 +24,7 @@ interface IAuthContext {
 const AuthContext = createContext<IAuthContext>({
   token: null,
   login: null,
+  signUp: null,
   logout: null,
   user: null,
 });
@@ -54,7 +56,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    console.log("use effect");
     const { CancelToken } = axios;
     const source = CancelToken.source();
 
@@ -102,8 +103,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("token");
   };
 
+  const signUp = async (userDto: IUserSignUp) => {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/sign-up`,
+        userDto
+      );
+
+      const { email, name } = res.data.user;
+      const user = { email, name };
+      const token = res.data.token;
+
+      setUser(user);
+      setToken(token);
+      localStorage.setItem("token", token);
+
+      return user;
+    } catch (err) {
+      setUser(null);
+      return null;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ token, login, logout, user }}>
+    <AuthContext.Provider value={{ token, login, signUp, logout, user }}>
       {children}
     </AuthContext.Provider>
   );

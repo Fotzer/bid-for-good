@@ -15,11 +15,13 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useAuth } from "@/providers/auth";
+import { redirect, useRouter } from "next/navigation";
 
 export type ProfileDropdownProps = {};
 
 export const ProfileDropdown = (_: ProfileDropdownProps) => {
   const { logout } = useAuth();
+  const router = useRouter();
 
   return (
     <DropdownMenu>
@@ -61,6 +63,7 @@ export const ProfileDropdown = (_: ProfileDropdownProps) => {
         <DropdownMenuItem
           onSelect={() => {
             logout!();
+            router.push("/sign-in");
           }}
         >
           <LogOut className="mr-2 h-4 w-4" />

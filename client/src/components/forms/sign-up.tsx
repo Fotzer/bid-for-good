@@ -18,8 +18,7 @@ import {
 import { Input } from "../ui/input";
 import { PasswordInput } from "../ui/password-input";
 import { useToast } from "../ui/use-toast";
-
-const SIGN_UP_REDIRECT_PATH = "/documents";
+import { useAuth } from "@/providers/auth";
 
 export const SignUpFormValidator = z
   .object({
@@ -47,6 +46,7 @@ export type SignUpFormProps = {
 
 export const SignUpForm = ({ className }: SignUpFormProps) => {
   const { toast } = useToast();
+  const { signUp } = useAuth();
 
   const form = useForm<TSignUpFormValidator>({
     values: {
@@ -65,12 +65,21 @@ export const SignUpForm = ({ className }: SignUpFormProps) => {
     password,
   }: TSignUpFormValidator) => {
     try {
-      // await signUp({ name, email, password });
-      // await signIn({
-      //   email,
-      //   password,
-      //   callbackUrl: SIGN_UP_REDIRECT_PATH,
-      // });
+      const user = await signUp!({ name, email, password });
+
+      if (user) {
+        toast({
+          title: "Signed up successfully",
+          description: "Enjoy our services",
+        });
+      } else {
+        toast({
+          title: "An unknown error occurred",
+          description:
+            "We encountered an unknown error while attempting to sign you up. Please try again later.",
+          variant: "destructive",
+        });
+      }
     } catch (err) {
       toast({
         title: "An unknown error occurred",
