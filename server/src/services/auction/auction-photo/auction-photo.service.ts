@@ -128,6 +128,16 @@ class AuctionPhotoService {
 
   async getAuctionPhotos(auctionId: string) {
     try {
+      const auction = await prisma.auction.findUnique({
+        where: {
+          id: Number(auctionId)
+        }
+      });
+      
+      if (!auction) {
+        throw new NotFoundError();
+      }
+      
       const photos = await prisma.auctionPhoto.findMany({
         where: {
           auctionId: Number(auctionId)
