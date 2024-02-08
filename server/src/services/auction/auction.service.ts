@@ -12,7 +12,7 @@ import {
   auctionCreateJoiSchema,
   auctionUpdateJoiSchema
 } from '../../common/joi schemas/auction/auction';
-import validateSchema from '../../helpers/validate-schema';
+import validateSchema from '../../validators/validate-schema';
 import AuctionPhotoService from './auction-photo/auction-photo.service';
 
 class AuctionService {
@@ -90,6 +90,16 @@ class AuctionService {
 
       if (!userId) {
         throw new NotFoundError(UserErrorMessage.notFound);
+      }
+
+      const existingAuction = await prisma.auction.findUnique({
+        where: {
+          userId: userId,
+          id: Number(id)
+      }});
+
+      if(!existingAuction) {
+        throw new NotFoundError();
       }
 
       let createdAuction;
