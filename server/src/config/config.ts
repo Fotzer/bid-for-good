@@ -5,7 +5,7 @@ dotenv.config();
 
 const envVarsSchema = z.object({
   NODE_ENV: z.enum(['production', 'development', 'test']),
-  PORT: z.string().default('3000'),
+  PORT: z.string().default(process.env.PORT!),
   JWT_SECRET: z.string().describe('JWT secret key'),
   JWT_ACCESS_EXPIRATION_MINUTES: z
     .number()
