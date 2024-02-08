@@ -20,6 +20,18 @@ auctionController.use('/', betController);
 
 auctionController.use('/', auctionPhotoController);
 
+auctionController.get(
+  '/:auctionId/',
+  validateParamsNumberMiddleware(['auctionId']),
+  async (req, res) => {
+    res.send(
+      await controllerHandleErrors(res, () =>
+      auctionService.get(Number(req.params.auctionId))
+      )
+    );
+  }
+);
+
 auctionController.post('/', upload.any(), transformAuctionMiddleware, async (req, res) => {
   res.statusCode = HTTPStatus.Created.status;
   res.send(
