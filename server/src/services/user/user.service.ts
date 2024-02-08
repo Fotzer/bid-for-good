@@ -13,6 +13,7 @@ import { ZodError } from 'zod';
 import { userCreateJoiSchema } from '../../common/joi schemas/user/user';
 import validateSchema from '../../validators/validate-schema';
 import { hash } from '../../helpers/bcrypt/bcrypt';
+import { emailValidator } from '../../validators/user/email.validator';
 
 class UserService {
   async create(userData: User): Promise<UserCreateResponseDto | undefined> {
@@ -21,6 +22,7 @@ class UserService {
 
       try {
         passwordValidator.parse(userData.password);
+        emailValidator.parse(userData.email);
       } catch (e) {
         if (e instanceof ZodError) {
           throw new BadRequestError(e.errors[0].message);
@@ -44,7 +46,7 @@ class UserService {
         }
       });
 
-      const token = jwt.sign({ email: userData.email, userId: user.id }, process.env.JWT_SECRET!);
+      const token = jwt.sign({ email: userData.email, userId: user.id, name: user.name }, process.env.JWT_SECRET!);
 
       await prisma.token.create({
         data: {
