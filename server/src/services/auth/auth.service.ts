@@ -54,7 +54,10 @@ class AuthService {
       }
 
       return {
-        user: user,
+        user: {
+          email: user.email,
+          name: user.name
+        },
         token: token.token
       };
     } catch (e) {
