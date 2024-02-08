@@ -11,6 +11,7 @@ import {
 } from "react";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
+import { redirect } from "next/navigation";
 
 interface IAuthContext {
   token: string | null;
@@ -53,6 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    console.log("use effect");
     const { CancelToken } = axios;
     const source = CancelToken.source();
 
@@ -83,6 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             });
             setToken(token);
             localStorage.removeItem("token");
+            setTimeout(() => redirect("/sign-in"), 1500);
           }
         }
       } catch (err) {}
