@@ -109,8 +109,6 @@ class AuctionService {
         throw new NotFoundError();
       }
 
-      console.log(existingAuction.userId);
-      console.log(userId);
       if (existingAuction.userId !== userId) {
         throw new ForbiddenError(UserErrorMessage.idMismatch);
       }
@@ -169,6 +167,8 @@ class AuctionService {
 
   async getUsers(id: number) {
     try {
+      await this.get(id);
+      
       const users = await prisma.bet.findMany({
         where: {
           auctionId: id
