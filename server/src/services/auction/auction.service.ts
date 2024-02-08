@@ -13,6 +13,7 @@ import {
   auctionUpdateJoiSchema
 } from '../../common/joi schemas/auction/auction';
 import validateSchema from '../../validators/validate-schema';
+import ForbiddenError from '../../common/errors/forbidden-server-error';
 
 class AuctionService {
   async get(id: number) {
@@ -102,15 +103,16 @@ class AuctionService {
         throw new NotFoundError(UserErrorMessage.notFound);
       }
 
-      const existingAuction = await prisma.auction.findUnique({
-        where: {
-          userId: userId,
-          id: id
-        }
-      });
+      const existingAuction = await this.get(id);
 
       if (!existingAuction) {
         throw new NotFoundError();
+      }
+
+      console.log(existingAuction.userId);
+      console.log(userId);
+      if (existingAuction.userId !== userId) {
+        throw new ForbiddenError(UserErrorMessage.idMismatch);
       }
 
       let createdAuction;
