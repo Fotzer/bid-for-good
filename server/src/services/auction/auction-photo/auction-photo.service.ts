@@ -6,11 +6,8 @@ import ImageCreateResponseDto from '../../../common/types/apis/freeimage/image.c
 import verifyToken from '../../../helpers/verify-token';
 import BadRequestError from '../../../common/errors/bad-request-error';
 import NotFoundError from '../../../common/errors/not-found-error';
-import AuctionService from '../auction.service';
 
 class AuctionPhotoService {
-  auctionService = new AuctionService();
-
   async create(token: string | undefined, photo: Buffer | undefined, auctionId: number) {
     try {
       verifyToken(token);
@@ -19,22 +16,20 @@ class AuctionPhotoService {
         throw new BadRequestError();
       }
 
-      this.auctionService.get(auctionId);
-
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
       formData.set('key', process.env.FREEIMAGE_API_KEY!);
-      
+
       const response = await fetch(FreeimageEndpoints.imageUpload, {
         method: 'POST',
         body: formData
       });
 
       const data: ImageCreateResponseDto = await response.json();
-      
+
       const createdAuctionPhoto = await prisma.auctionPhoto.create({
         data: {
-          auctionId: auctionId,
+          auctionId: Number(auctionId),
           photoLink: data.image.url
         }
       });
@@ -49,15 +44,13 @@ class AuctionPhotoService {
     }
   }
 
-  async update(token: string, photo: Buffer | undefined, id: number) {
+  async update(token: string, photo: Buffer | undefined, id: string) {
     try {
       verifyToken(token);
 
       if (!photo) {
         throw new BadRequestError();
       }
-
-      this.auctionService.get(id);
 
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
@@ -72,7 +65,7 @@ class AuctionPhotoService {
 
       const updatedAuction = await prisma.auctionPhoto.update({
         where: {
-          id: id
+          id: Number(id)
         },
         data: {
           photoLink: data.image.url
@@ -89,14 +82,14 @@ class AuctionPhotoService {
     }
   }
 
-  async delete(token: string, id: number) {
+  async delete(token: string, id: string) {
     try {
       verifyToken(token);
 
       try {
         const deletedAuction = await prisma.auctionPhoto.delete({
           where: {
-            id: id
+            id: Number(id)
           }
         });
 
@@ -113,13 +106,11 @@ class AuctionPhotoService {
     }
   }
 
-  async getAuctionPhotos(auctionId: number) {
+  async getAuctionPhotos(auctionId: string) {
     try {
-      this.auctionService.get(auctionId);
-
       const photos = await prisma.auctionPhoto.findMany({
         where: {
-          auctionId: auctionId
+          auctionId: Number(auctionId)
         }
       });
 

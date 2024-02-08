@@ -11,7 +11,7 @@ import BadRequestError from '../../common/errors/bad-request-error';
 import { passwordValidator } from '../../validators/user/password-validator';
 import { ZodError } from 'zod';
 import { userCreateJoiSchema } from '../../common/joi schemas/user/user';
-import validateSchema from '../../validators/validate-schema';
+import validateSchema from '../../helpers/validate-schema';
 
 class UserService {
   async create(userData: User): Promise<UserCreateResponseDto | undefined> {

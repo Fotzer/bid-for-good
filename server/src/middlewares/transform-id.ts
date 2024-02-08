@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import HTTPStatus from '../common/enums/http-status';
+import { number } from 'joi';
 
 function validateParamsNumberMiddleware(attributes: string[]) {
   return function (req: Request, res: Response, next: NextFunction) {

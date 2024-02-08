@@ -1,5 +1,4 @@
 const HTTPStatus = {
-  Created: { status: 201, message: 'Created' },
   Unauthorized: { status: 401, message: 'Not Authorized' },
   InternalServerError: { status: 500, message: 'Internal Server Error' },
   NotFound: { status: 404, message: 'Not Found' },

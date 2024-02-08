@@ -7,14 +7,11 @@ import UserErrorMessage from '../../../common/errors/messages/user.error.message
 import prisma from '../../../client';
 import BadRequestError from '../../../common/errors/bad-request-error';
 import { betJoiSchema } from '../../../common/joi schemas/bet/bet';
-import validateSchema from '../../../validators/validate-schema';
+import validateSchema from '../../../helpers/validate-schema';
 import BetErrorMessage from '../../../common/errors/messages/bet.error.message';
-import AuctionService from '../auction.service';
 
 class BetService {
-  auctionService = new AuctionService;
-
-  async create(token: string | undefined, auctionId: number, bet: Bet) {
+  async create(token: string | undefined, auctionId: string, bet: Bet) {
     try {
       const betSchema = betJoiSchema();
 
@@ -32,7 +29,7 @@ class BetService {
           data: {
             betValue: bet.betValue,
             userId: userId,
-            auctionId: auctionId
+            auctionId: Number(auctionId)
           }
         });
       } catch (e) {
@@ -49,13 +46,21 @@ class BetService {
     }
   }
 
-  async getHistory(auctionId: number) {
+  async getHistory(auctionId: string) {
     try {
-      this.auctionService.get(auctionId);
+      const auction = await prisma.auction.findUnique({
+        where: {
+          id: Number(auctionId)
+        }
+      });
+
+      if (!auction) {
+        throw new NotFoundError();
+      }
 
       const bets = await prisma.bet.findMany({
         where: {
-          auctionId: auctionId
+          auctionId: Number(auctionId)
         },
         orderBy: {
           createdAt: 'desc'

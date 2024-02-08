@@ -12,36 +12,17 @@ import {
   auctionCreateJoiSchema,
   auctionUpdateJoiSchema
 } from '../../common/joi schemas/auction/auction';
-import validateSchema from '../../validators/validate-schema';
+import validateSchema from '../../helpers/validate-schema';
+import AuctionPhotoService from './auction-photo/auction-photo.service';
 
 class AuctionService {
-  async get(id: number) {
-    try {
-      const auction = await prisma.auction.findUnique({
-        where: {
-          id: id
-        }
-      });
-      
-      if (!auction) {
-        throw new NotFoundError();
-      }
-
-      return auction;
-
-    } catch (e) {
-      if (e instanceof HTTPError) {
-        throw e;
-      } else if (e instanceof Error) {
-        throw new InternalServerError(e.message);
-      }
-    }
-  }
+  auctionPhotoService = new AuctionPhotoService();
 
   async create(
     token: string | undefined,
     auction: Auction,
     photo: Buffer | undefined,
+    photos: Buffer[]
   ) {
     try {
       const auctionSchema = auctionCreateJoiSchema();
@@ -80,6 +61,10 @@ class AuctionService {
           }
         });
 
+        for (const photo of photos) {
+          this.auctionPhotoService.create(token, photo.buffer as Buffer, createdAuction.id);
+        }
+
         return createdAuction;
       } catch (e) {
         throw new BadRequestError();
@@ -93,7 +78,7 @@ class AuctionService {
     }
   }
 
-  async update(token: string | undefined, id: number, auction: Auction, photo: Buffer | undefined) {
+  async update(token: string | undefined, id: string, auction: Auction, photo: Buffer | undefined) {
     try {
       const auctionSchema = auctionUpdateJoiSchema();
 
@@ -105,16 +90,6 @@ class AuctionService {
 
       if (!userId) {
         throw new NotFoundError(UserErrorMessage.notFound);
-      }
-
-      const existingAuction = await prisma.auction.findUnique({
-        where: {
-          userId: userId,
-          id: id
-      }});
-
-      if(!existingAuction) {
-        throw new NotFoundError();
       }
 
       let createdAuction;
@@ -135,7 +110,7 @@ class AuctionService {
           createdAuction = await prisma.auction.update({
             where: {
               userId: userId,
-              id: id
+              id: Number(id)
             },
             data: {
               ...auction,
@@ -146,7 +121,7 @@ class AuctionService {
           createdAuction = await prisma.auction.update({
             where: {
               userId: userId,
-              id: id
+              id: Number(id)
             },
             data: {
               ...auction
@@ -169,11 +144,11 @@ class AuctionService {
     }
   }
 
-  async getUsers(id: number) {
+  async getUsers(id: string) {
     try {
       const users = await prisma.bet.findMany({
         where: {
-          auctionId: id
+          auctionId: Number(id)
         },
         select: {
           user: {

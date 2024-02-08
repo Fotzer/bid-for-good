@@ -1,7 +1,6 @@
 import express from 'express';
 import controllerHandleErrors from '../../helpers/controller-handle-errors';
 import AuthService from '../../services/auth/auth.service';
-import HTTPStatus from '../../common/enums/http-status';
 
 const authController = express.Router();
 
@@ -12,7 +11,6 @@ authController.post('/login', async (req, res) => {
 });
 
 authController.post('/sign-up', async (req, res) => {
-  res.statusCode = HTTPStatus.Created.status;
   res.send(await controllerHandleErrors(res, () => authService.signUp(req.body)));
 });
 
