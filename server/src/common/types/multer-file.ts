@@ -1,5 +1,5 @@
 type MulterFile = {
-    buffer: Buffer
-}
+  buffer: Buffer;
+};
 
 export default MulterFile;

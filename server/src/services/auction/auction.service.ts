@@ -22,13 +22,12 @@ class AuctionService {
           id: id
         }
       });
-      
+
       if (!auction) {
         throw new NotFoundError();
       }
 
       return auction;
-
     } catch (e) {
       if (e instanceof HTTPError) {
         throw e;
@@ -38,11 +37,7 @@ class AuctionService {
     }
   }
 
-  async create(
-    token: string | undefined,
-    auction: Auction,
-    photo: Buffer | undefined,
-  ) {
+  async create(token: string | undefined, auction: Auction, photo: Buffer | undefined) {
     try {
       const auctionSchema = auctionCreateJoiSchema();
 
@@ -111,9 +106,10 @@ class AuctionService {
         where: {
           userId: userId,
           id: id
-      }});
+        }
+      });
 
-      if(!existingAuction) {
+      if (!existingAuction) {
         throw new NotFoundError();
       }
 

@@ -23,26 +23,31 @@ auctionController.use('/', auctionPhotoController);
 auctionController.post('/', upload.any(), transformAuctionMiddleware, async (req, res) => {
   res.statusCode = HTTPStatus.Created.status;
   res.send(
-    await controllerHandleErrors(res, async () =>
-      {
-        const auction = await auctionService.create(
-          req.headers['authorization'],
-          req.body,
-          (req.files as MulterFile[])[0].buffer,
-        );
+    await controllerHandleErrors(res, async () => {
+      const auction = await auctionService.create(
+        req.headers['authorization'],
+        req.body,
+        (req.files as MulterFile[])[0].buffer
+      );
 
-        const auctionPhotos = await Promise.all((req.files as MulterFile[])
-        .slice(1)
-        .map(async (auctionPhoto) => 
-          await auctionPhotoService.create(req.headers['authorization'], auctionPhoto.buffer, auction!.id)
-        ));
-        
-        return {
-          auction: auction,
-          auctionPhotos: auctionPhotos
-      }
-      }
-    )
+      const auctionPhotos = await Promise.all(
+        (req.files as MulterFile[])
+          .slice(1)
+          .map(
+            async (auctionPhoto) =>
+              await auctionPhotoService.create(
+                req.headers['authorization'],
+                auctionPhoto.buffer,
+                auction!.id
+              )
+          )
+      );
+
+      return {
+        auction: auction,
+        auctionPhotos: auctionPhotos
+      };
+    })
   );
 });
 
@@ -71,7 +76,9 @@ auctionController.get(
   transformAuctionMiddleware,
   validateParamsNumberMiddleware(['id']),
   async (req, res) => {
-    res.send(await controllerHandleErrors(res, () => auctionService.getUsers(Number(req.params.id))));
+    res.send(
+      await controllerHandleErrors(res, () => auctionService.getUsers(Number(req.params.id)))
+    );
   }
 );
 

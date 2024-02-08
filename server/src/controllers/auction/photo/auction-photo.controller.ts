@@ -47,7 +47,11 @@ auctionPhotoController.put(
   async (req, res) => {
     res.send(
       await controllerHandleErrors(res, () =>
-        auctionPhotoService.update(req.headers['authorization']!, req.file?.buffer, Number(req.params.id))
+        auctionPhotoService.update(
+          req.headers['authorization']!,
+          req.file?.buffer,
+          Number(req.params.id)
+        )
       )
     );
   }

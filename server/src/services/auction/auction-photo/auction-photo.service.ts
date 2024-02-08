@@ -24,14 +24,14 @@ class AuctionPhotoService {
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
       formData.set('key', process.env.FREEIMAGE_API_KEY!);
-      
+
       const response = await fetch(FreeimageEndpoints.imageUpload, {
         method: 'POST',
         body: formData
       });
 
       const data: ImageCreateResponseDto = await response.json();
-      
+
       const createdAuctionPhoto = await prisma.auctionPhoto.create({
         data: {
           auctionId: auctionId,

@@ -12,7 +12,7 @@ import BetErrorMessage from '../../../common/errors/messages/bet.error.message';
 import AuctionService from '../auction.service';
 
 class BetService {
-  auctionService = new AuctionService;
+  auctionService = new AuctionService();
 
   async create(token: string | undefined, auctionId: number, bet: Bet) {
     try {

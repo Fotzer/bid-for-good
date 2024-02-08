@@ -28,7 +28,9 @@ betController.get(
   validateParamsNumberMiddleware(['auctionId']),
   transformBetMiddleware,
   async (req, res) => {
-    res.send(await controllerHandleErrors(res, () => betService.getHistory(Number(req.params.auctionId))));
+    res.send(
+      await controllerHandleErrors(res, () => betService.getHistory(Number(req.params.auctionId)))
+    );
   }
 );
 

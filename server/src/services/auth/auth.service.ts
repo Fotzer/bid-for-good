@@ -31,7 +31,7 @@ class AuthService {
         throw new NotFoundError(UserErrorMessage.notFound);
       }
 
-      if (!await compare(loginData.password, user.password)) {
+      if (!(await compare(loginData.password, user.password))) {
         throw new UnauthorizedError(UserErrorMessage.wrongPassword);
       }
 
