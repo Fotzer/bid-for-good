@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
 
 interface IAuthContext {
   token: string | null;
@@ -52,13 +53,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    const { CancelToken } = axios;
+    const source = CancelToken.source();
+
     (async () => {
-      const storedToken = localStorage.getItem("token");
-      if (storedToken) {
-        setToken(storedToken);
-      }
+      try {
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+          setToken(storedToken);
+          const res = await axios.post(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login-by-token`,
+            "",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              cancelToken: source.token,
+            }
+          );
+
+          if (res.status < 307) {
+            const { email, name } = res.data;
+            setUser({ email, name });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Unable to authenticate",
+              description: "Your token was probably malformed",
+            });
+            setToken(token);
+            localStorage.removeItem("token");
+          }
+        }
+      } catch (err) {}
     })();
-  }, [login]);
+
+    return () => {
+      source.cancel("Operation canceled due to component unmount");
+    };
+  }, [login, token]);
 
   const logout = () => {
     setToken(null);
