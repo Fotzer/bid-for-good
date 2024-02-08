@@ -12,6 +12,7 @@ import { passwordValidator } from '../../validators/user/password-validator';
 import { ZodError } from 'zod';
 import { userCreateJoiSchema } from '../../common/joi schemas/user/user';
 import validateSchema from '../../validators/validate-schema';
+import { hash } from '../../helpers/bcrypt/bcrypt';
 
 class UserService {
   async create(userData: User): Promise<UserCreateResponseDto | undefined> {
@@ -38,7 +39,8 @@ class UserService {
 
       const user = await prisma.user.create({
         data: {
-          ...userData
+          ...userData,
+          password: await hash(userData.password)
         }
       });
 

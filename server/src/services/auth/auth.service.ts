@@ -12,6 +12,7 @@ import validateSchema from '../../validators/validate-schema';
 import { loginSchema } from '../../common/joi schemas/auth/auth';
 import AuthLoginResponseDto from '../../common/types/auth/auth.login.response.dto';
 import UnauthorizedError from '../../common/errors/unauthorized-error';
+import { compare } from '../../helpers/bcrypt/bcrypt';
 
 class AuthService {
   userService = new UserService();
@@ -30,7 +31,7 @@ class AuthService {
         throw new NotFoundError(UserErrorMessage.notFound);
       }
 
-      if (user.password !== loginData.password) {
+      if (!await compare(loginData.password, user.password)) {
         throw new UnauthorizedError(UserErrorMessage.wrongPassword);
       }
 
