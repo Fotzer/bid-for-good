@@ -6,6 +6,7 @@ import transformAuctionMiddleware from '../../middlewares/auction/transform.auct
 import betController from './bet/bet.controller';
 import auctionPhotoController from './photo/auction-photo.controller';
 import validateParamsNumberMiddleware from '../../middlewares/transform-id';
+import HTTPStatus from '../../common/enums/http-status';
 const upload = multer();
 
 const auctionController = express.Router();
@@ -17,6 +18,7 @@ auctionController.use('/', betController);
 auctionController.use('/', auctionPhotoController);
 
 auctionController.post('/', upload.any(), transformAuctionMiddleware, async (req, res) => {
+  res.statusCode = HTTPStatus.Created.status;
   res.send(
     await controllerHandleErrors(res, () =>
       auctionService.create(
