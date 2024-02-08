@@ -6,8 +6,11 @@ import ImageCreateResponseDto from '../../../common/types/apis/freeimage/image.c
 import verifyToken from '../../../helpers/verify-token';
 import BadRequestError from '../../../common/errors/bad-request-error';
 import NotFoundError from '../../../common/errors/not-found-error';
+import AuctionService from '../auction.service';
 
 class AuctionPhotoService {
+  auctionService = new AuctionService();
+
   async create(token: string | undefined, photo: Buffer | undefined, auctionId: number) {
     try {
       verifyToken(token);
@@ -15,6 +18,10 @@ class AuctionPhotoService {
       if (!photo) {
         throw new BadRequestError();
       }
+
+      await this.auctionService.get(auctionId);
+
+     
 
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
@@ -29,7 +36,7 @@ class AuctionPhotoService {
 
       const createdAuctionPhoto = await prisma.auctionPhoto.create({
         data: {
-          auctionId: Number(auctionId),
+          auctionId: auctionId,
           photoLink: data.image.url
         }
       });
@@ -44,13 +51,15 @@ class AuctionPhotoService {
     }
   }
 
-  async update(token: string, photo: Buffer | undefined, id: string) {
+  async update(token: string, photo: Buffer | undefined, id: number) {
     try {
       verifyToken(token);
 
       if (!photo) {
         throw new BadRequestError();
       }
+
+      await this.auctionService.get(id);
 
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
@@ -65,7 +74,7 @@ class AuctionPhotoService {
 
       const updatedAuction = await prisma.auctionPhoto.update({
         where: {
-          id: Number(id)
+          id: id
         },
         data: {
           photoLink: data.image.url
@@ -82,14 +91,14 @@ class AuctionPhotoService {
     }
   }
 
-  async delete(token: string, id: string) {
+  async delete(token: string, id: number) {
     try {
       verifyToken(token);
 
       try {
         const deletedAuction = await prisma.auctionPhoto.delete({
           where: {
-            id: Number(id)
+            id: id
           }
         });
 
@@ -106,11 +115,13 @@ class AuctionPhotoService {
     }
   }
 
-  async getAuctionPhotos(auctionId: string) {
+  async getAuctionPhotos(auctionId: number) {
     try {
+      await this.auctionService.get(auctionId);
+
       const photos = await prisma.auctionPhoto.findMany({
         where: {
-          auctionId: Number(auctionId)
+          auctionId: auctionId
         }
       });
 

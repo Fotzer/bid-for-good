@@ -6,26 +6,48 @@ import transformAuctionMiddleware from '../../middlewares/auction/transform.auct
 import betController from './bet/bet.controller';
 import auctionPhotoController from './photo/auction-photo.controller';
 import validateParamsNumberMiddleware from '../../middlewares/transform-id';
+import HTTPStatus from '../../common/enums/http-status';
+import AuctionPhotoService from '../../services/auction/auction-photo/auction-photo.service';
+import MulterFile from '../../common/types/multer-file';
 const upload = multer();
 
 const auctionController = express.Router();
 
 const auctionService = new AuctionService();
+const auctionPhotoService = new AuctionPhotoService();
 
 auctionController.use('/', betController);
 
 auctionController.use('/', auctionPhotoController);
 
 auctionController.post('/', upload.any(), transformAuctionMiddleware, async (req, res) => {
+  res.statusCode = HTTPStatus.Created.status;
   res.send(
-    await controllerHandleErrors(res, () =>
-      auctionService.create(
+    await controllerHandleErrors(res, async () => {
+      const auction = await auctionService.create(
         req.headers['authorization'],
         req.body,
-        (req.files as unknown as Buffer[])[0].buffer as Buffer,
-        (req.files as unknown as Buffer[]).slice(1) as Buffer[]
-      )
-    )
+        (req.files as MulterFile[])[0].buffer
+      );
+
+      const auctionPhotos = await Promise.all(
+        (req.files as MulterFile[])
+          .slice(1)
+          .map(
+            async (auctionPhoto) =>
+              await auctionPhotoService.create(
+                req.headers['authorization'],
+                auctionPhoto.buffer,
+                auction!.id
+              )
+          )
+      );
+
+      return {
+        auction: auction,
+        auctionPhotos: auctionPhotos
+      };
+    })
   );
 });
 
@@ -39,7 +61,7 @@ auctionController.put(
       await controllerHandleErrors(res, () =>
         auctionService.update(
           req.headers['authorization'],
-          req.params.id,
+          Number(req.params.id),
           req.body,
           req.file?.buffer
         )
@@ -54,7 +76,9 @@ auctionController.get(
   transformAuctionMiddleware,
   validateParamsNumberMiddleware(['id']),
   async (req, res) => {
-    res.send(await controllerHandleErrors(res, () => auctionService.getUsers(req.params.id)));
+    res.send(
+      await controllerHandleErrors(res, () => auctionService.getUsers(Number(req.params.id)))
+    );
   }
 );
 
