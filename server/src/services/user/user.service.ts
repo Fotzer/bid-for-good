@@ -15,8 +15,31 @@ import validateSchema from '../../validators/validate-schema';
 import { hash } from '../../helpers/bcrypt/bcrypt';
 import { emailValidator } from '../../validators/user/email.validator';
 import verifyToken from '../../helpers/verify-token';
+import NotFoundError from '../../common/errors/not-found-error';
 
 class UserService {
+  async get(id: number) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: id
+        }
+      });
+
+      if(!user) {
+        throw new NotFoundError();
+      }
+
+      return user;
+    } catch (e) {
+      if (e instanceof HTTPError) {
+        throw e;
+      } else if (e instanceof Error) {
+        throw new InternalServerError(e.message);
+      }
+    }
+  }
+
   async changeName(token: string | undefined, userData: User) {
     try {
       validateSchema(userUpdateJoiSchema(), userData);
@@ -72,7 +95,7 @@ class UserService {
         }
       });
 
-      const token = jwt.sign({ email: userData.email, userId: user.id, name: user.name }, process.env.JWT_SECRET!);
+      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!);
 
       await prisma.token.create({
         data: {
