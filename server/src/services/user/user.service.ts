@@ -10,12 +10,38 @@ import { expireTimeInMilliseconds } from '../../common/constants/token.constants
 import BadRequestError from '../../common/errors/bad-request-error';
 import { passwordValidator } from '../../validators/user/password-validator';
 import { ZodError } from 'zod';
-import { userCreateJoiSchema } from '../../common/joi schemas/user/user';
+import { userCreateJoiSchema, userUpdateJoiSchema } from '../../common/joi schemas/user/user';
 import validateSchema from '../../validators/validate-schema';
 import { hash } from '../../helpers/bcrypt/bcrypt';
 import { emailValidator } from '../../validators/user/email.validator';
+import verifyToken from '../../helpers/verify-token';
 
 class UserService {
+  async changeName(token: string | undefined, userData: User) {
+    try {
+      validateSchema(userUpdateJoiSchema(), userData);
+
+      const user = verifyToken(token);
+
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: user!.userId
+        },
+        data: {
+          name: userData.name
+        }
+      });
+
+      return updatedUser;
+    } catch (e) {
+      if (e instanceof HTTPError) {
+        throw e;
+      } else if (e instanceof Error) {
+        throw new InternalServerError(e.message);
+      }
+    }
+  }
+
   async create(userData: User): Promise<UserCreateResponseDto | undefined> {
     try {
       validateSchema(userCreateJoiSchema(), userData);
