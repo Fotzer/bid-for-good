@@ -1,5 +1,3 @@
-import { User } from '@prisma/client';
-
 type AuthLoginResponseDto = {
   token: string;
   user: {
