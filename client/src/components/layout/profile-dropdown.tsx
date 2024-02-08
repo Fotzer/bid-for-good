@@ -4,6 +4,8 @@ import Link from "next/link";
 
 import { Github, LogOut, User as LucideUser } from "lucide-react";
 
+import { useAuth } from "@/providers/auth";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -14,13 +16,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useAuth } from "@/providers/auth";
-import { redirect, useRouter } from "next/navigation";
 
 export type ProfileDropdownProps = {};
 
 export const ProfileDropdown = (_: ProfileDropdownProps) => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const router = useRouter();
 
   return (
@@ -32,7 +32,12 @@ export const ProfileDropdown = (_: ProfileDropdownProps) => {
           className="relative h-10 w-10 rounded-full"
         >
           <Avatar className="h-10 w-10">
-            <AvatarFallback>FN</AvatarFallback>
+            <AvatarFallback>
+              {user?.name
+                ?.split(" ")
+                .map((word) => (word.length > 0 ? word[0] : ""))
+                .join("")}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

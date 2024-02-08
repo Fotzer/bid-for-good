@@ -6,7 +6,7 @@ import Image from "next/image";
 
 import backgroundPattern from "../../assets/background-pattern.webp";
 import { useAuth } from "@/providers/auth";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 
 type UnauthenticatedLayoutProps = {
   children: React.ReactNode;
@@ -16,9 +16,14 @@ export default function UnauthenticatedLayout({
   children,
 }: UnauthenticatedLayoutProps) {
   const { user } = useAuth();
+  const params = useSearchParams();
 
   if (user) {
-    redirect("/auctions");
+    if (params.get("redirectTo")) {
+      redirect(params.get("redirectTo")!);
+    } else {
+      redirect("/auctions");
+    }
   }
   return (
     <main className="bg-sand-100 relative flex min-h-screen flex-col items-center justify-center overflow-hidden  px-4 py-12 md:p-12 lg:p-24">

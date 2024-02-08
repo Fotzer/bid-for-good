@@ -1,6 +1,9 @@
 "use client";
 
+import { toast } from "@/components/ui/use-toast";
 import { IUser, IUserSignIn, IUserSignUp } from "@/types/user";
+import axios from "axios";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ReactNode,
   createContext,
@@ -9,9 +12,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import axios from "axios";
-import { toast } from "@/components/ui/use-toast";
-import { redirect } from "next/navigation";
 
 interface IAuthContext {
   token: string | null;
@@ -32,6 +32,9 @@ const AuthContext = createContext<IAuthContext>({
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   const login = useCallback(async (userDto: IUserSignIn) => {
     try {
@@ -58,6 +61,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const { CancelToken } = axios;
     const source = CancelToken.source();
+
+    const redirectPath = `/sign-in${
+      pathname.includes("sign-in") || pathname.includes("sign-up")
+        ? ""
+        : `?redirectTo=${pathname}`
+    }`;
 
     (async () => {
       try {
@@ -86,16 +95,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             });
             setToken(token);
             localStorage.removeItem("token");
-            setTimeout(() => redirect("/sign-in"), 1500);
+            setTimeout(() => router.push(redirectPath), 1500);
           }
+        } else {
+          router.push(redirectPath);
         }
-      } catch (err) {}
+      } catch (err) {
+        router.push(redirectPath);
+      }
     })();
 
     return () => {
       source.cancel("Operation canceled due to component unmount");
     };
-  }, [login, token]);
+  }, [login, token, router, pathname]);
 
   const logout = () => {
     setToken(null);
