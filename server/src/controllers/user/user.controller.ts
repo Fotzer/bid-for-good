@@ -12,4 +12,9 @@ userController.post('/', async (req, res) => {
   res.send(await controllerHandleErrors(res, () => userService.create(req.body)));
 });
 
+userController.put('/name', async (req, res) => {
+  res.statusCode = HTTPStatus.Created.status;
+  res.send(await controllerHandleErrors(res, () => userService.changeName(req.headers['authorization'], req.body)));
+});
+
 export default userController;
