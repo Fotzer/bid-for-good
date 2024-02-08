@@ -14,10 +14,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useAuth } from "@/providers/auth";
 
 export type ProfileDropdownProps = {};
 
 export const ProfileDropdown = (_: ProfileDropdownProps) => {
+  const { logout } = useAuth();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -55,7 +58,11 @@ export const ProfileDropdown = (_: ProfileDropdownProps) => {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onSelect={() => {}}>
+        <DropdownMenuItem
+          onSelect={() => {
+            logout!();
+          }}
+        >
           <LogOut className="mr-2 h-4 w-4" />
           Sign Out
         </DropdownMenuItem>
