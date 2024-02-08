@@ -1,12 +1,23 @@
+"use client";
+
 import React from "react";
 
 import { Header } from "@/components/layout/header";
+import { useAuth } from "@/providers/auth";
+import { redirect } from "next/navigation";
 
 export type AuctionsProps = {
   children: React.ReactNode;
 };
 
-export default async function Auctions({ children }: AuctionsProps) {
+export default function Auctions({ children }: AuctionsProps) {
+  const { user } = useAuth();
+  console.log(user);
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
   return (
     <>
       <Header />

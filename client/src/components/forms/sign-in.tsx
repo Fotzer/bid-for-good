@@ -4,8 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { CurrentPasswordValidator } from "@/lib/validators/auth";
 import { cn } from "@/lib/utils";
+import { CurrentPasswordValidator } from "@/lib/validators/auth";
+import { useAuth } from "@/providers/auth";
+import { IUserSignIn } from "@/types/user";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -18,14 +20,6 @@ import {
 import { Input } from "../ui/input";
 import { PasswordInput } from "../ui/password-input";
 import { useToast } from "../ui/use-toast";
-import { ErrorCode, isErrorCode } from "@/types/auth-errors";
-
-const ERROR_MESSAGES: Partial<Record<keyof typeof ErrorCode, string>> = {
-  [ErrorCode.CREDENTIALS_NOT_FOUND]:
-    "The email or password provided is incorrect",
-  [ErrorCode.INCORRECT_EMAIL_PASSWORD]:
-    "The email or password provided is incorrect",
-};
 
 export const SignInFormValidator = z.object({
   email: z.string().email().min(1),
@@ -49,34 +43,31 @@ export const SignInForm = ({ className }: SignInFormProps) => {
     resolver: zodResolver(SignInFormValidator),
   });
 
+  const { login } = useAuth();
+
   const isSubmitting = form.formState.isSubmitting;
 
   const onFormSubmit = async ({ email, password }: TSignInFormValidator) => {
-    try {
-      const credentials: Record<string, string> = {
-        email,
-        password,
-      };
+    const credentials: IUserSignIn = {
+      email,
+      password,
+    };
 
-      // sign in
-      // let result;
+    let user = await login!(credentials);
 
-      // if (result?.error && isErrorCode(result.error)) {
-      //   const errorMessage = ERROR_MESSAGES[result.error];
-
-      //   toast({
-      //     variant: "destructive",
-      //     title: "Unable to sign in",
-      //     description: errorMessage ?? "An unknown error occurred",
-      //   });
-
-      //   return;
-      // }
-    } catch (err) {
+    if (!user) {
       toast({
-        title: "An unknown error occurred",
-        description:
-          "We encountered an unknown error while attempting to sign you In. Please try again later.",
+        variant: "destructive",
+        title: "Unable to sign in",
+        description: "An unknown error occurred",
+      });
+
+      return;
+    } else {
+      toast({
+        variant: "default",
+        title: "Signed in",
+        description: "Welcome back to our application",
       });
     }
   };

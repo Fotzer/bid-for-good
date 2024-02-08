@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 datasource db {
@@ -11,17 +12,16 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
   name      String?
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   Token     Token[]
   Auction   Auction[]
   Bet       Bet[]
 }
-
 
 model Token {
   id        Int      @id @default(autoincrement())
@@ -32,12 +32,11 @@ model Token {
   userId    Int      @unique
 }
 
-
 model Auction {
-  id           Int      @id @default(autoincrement())
-  startPrice   Int      @default(0)
-  createdAt    DateTime @default(now())
-  user         User     @relation(fields: [userId], references: [id])
+  id           Int            @id @default(autoincrement())
+  startPrice   Int            @default(0)
+  createdAt    DateTime       @default(now())
+  user         User           @relation(fields: [userId], references: [id])
   userId       Int
   mainPhoto    String
   name         String
@@ -47,18 +46,18 @@ model Auction {
 }
 
 model AuctionPhoto {
-  id             Int         @id @default(autoincrement())
-  photoLink      String
-  auction        Auction     @relation(fields: [auctionId], references: [id])
-  auctionId      Int
+  id        Int     @id @default(autoincrement())
+  photoLink String
+  auction   Auction @relation(fields: [auctionId], references: [id])
+  auctionId Int
 }
 
 model Bet {
-  id            Int         @id @default(autoincrement())
-  betValue      Int
-  user          User        @relation(fields: [userId], references: [id])
-  userId        Int
-  createdAt     DateTime    @default(now())
-  auction       Auction     @relation(fields: [auctionId], references: [id])
-  auctionId     Int
+  id        Int      @id @default(autoincrement())
+  betValue  Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+  auction   Auction  @relation(fields: [auctionId], references: [id])
+  auctionId Int
 }
