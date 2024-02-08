@@ -34,7 +34,7 @@ export type ProfileFormProps = {
 
 export const ProfileForm = ({ className }: ProfileFormProps) => {
   const router = useRouter();
-  const { token, user } = useAuth();
+  const { token, user, updateUserName } = useAuth();
 
   const { toast } = useToast();
 
@@ -49,7 +49,7 @@ export const ProfileForm = ({ className }: ProfileFormProps) => {
 
   const onFormSubmit = async ({ name }: TProfileFormSchema) => {
     try {
-      const res = await axios.put(
+      await axios.put(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/users/name`,
         {
           name,
@@ -61,12 +61,13 @@ export const ProfileForm = ({ className }: ProfileFormProps) => {
         }
       );
 
-      console.log(res);
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
         duration: 5000,
       });
+
+      updateUserName!(name);
 
       router.refresh();
     } catch (err) {

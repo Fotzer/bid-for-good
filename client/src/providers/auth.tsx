@@ -18,6 +18,7 @@ interface IAuthContext {
   login: ((userDto: IUserSignIn) => Promise<IUser | null>) | null;
   signUp: ((userDto: IUserSignUp) => Promise<IUser | null>) | null;
   logout: (() => void) | null;
+  updateUserName: ((newName: string) => void) | null;
   user: IUser | null;
 }
 
@@ -27,6 +28,7 @@ const AuthContext = createContext<IAuthContext>({
   signUp: null,
   logout: null,
   user: null,
+  updateUserName: null,
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -138,8 +140,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateUserName = (newName: string) =>
+    user && setUser((p) => ({ ...p!, name: newName }));
+
   return (
-    <AuthContext.Provider value={{ token, login, signUp, logout, user }}>
+    <AuthContext.Provider
+      value={{ token, login, signUp, logout, user, updateUserName }}
+    >
       {children}
     </AuthContext.Provider>
   );
