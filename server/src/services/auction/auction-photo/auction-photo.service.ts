@@ -59,7 +59,7 @@ class AuctionPhotoService {
         throw new BadRequestError();
       }
 
-      this.auctionService.get(id);
+      await this.auctionService.get(id);
 
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
@@ -117,7 +117,7 @@ class AuctionPhotoService {
 
   async getAuctionPhotos(auctionId: number) {
     try {
-      this.auctionService.get(auctionId);
+      await this.auctionService.get(auctionId);
 
       const photos = await prisma.auctionPhoto.findMany({
         where: {

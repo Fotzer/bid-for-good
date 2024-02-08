@@ -51,7 +51,7 @@ class BetService {
 
   async getHistory(auctionId: number) {
     try {
-      this.auctionService.get(auctionId);
+      await this.auctionService.get(auctionId);
 
       const bets = await prisma.bet.findMany({
         where: {
