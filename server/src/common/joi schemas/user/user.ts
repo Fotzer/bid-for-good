@@ -10,4 +10,12 @@ function userCreateJoiSchema() {
     .required();
 }
 
-export { userCreateJoiSchema };
+function userUpdateJoiSchema() {
+  return joi
+    .object({
+      name: joi.string()
+    })
+    .required();
+}
+
+export { userCreateJoiSchema, userUpdateJoiSchema};

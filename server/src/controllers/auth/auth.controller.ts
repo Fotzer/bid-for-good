@@ -17,7 +17,6 @@ authController.post('/sign-up', async (req, res) => {
 });
 
 authController.post('/login-by-token', async (req, res) => {
-  res.statusCode = HTTPStatus.Created.status;
   res.send(await controllerHandleErrors(res, () => authService.loginByToken(req.headers['authorization'])));
 });
 

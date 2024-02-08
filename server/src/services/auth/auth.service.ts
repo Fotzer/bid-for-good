@@ -22,7 +22,7 @@ class AuthService {
     try {
       const user = verifyToken(token);
 
-      return user;
+      return {...user, iat: undefined};
     } catch (e) {
       if (e instanceof HTTPError) {
         throw e;
