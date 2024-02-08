@@ -23,7 +23,7 @@ class AuctionService {
           id: id
         }
       });
-
+      
       if (!auction) {
         throw new NotFoundError();
       }

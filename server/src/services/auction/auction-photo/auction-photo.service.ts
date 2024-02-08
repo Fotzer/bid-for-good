@@ -19,7 +19,9 @@ class AuctionPhotoService {
         throw new BadRequestError();
       }
 
-      this.auctionService.get(auctionId);
+      await this.auctionService.get(auctionId);
+
+     
 
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
