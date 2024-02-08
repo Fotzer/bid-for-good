@@ -9,8 +9,8 @@ import NotFoundError from '../../../common/errors/not-found-error';
 import AuctionService from '../auction.service';
 
 class AuctionPhotoService {
-  auctionService = new AuctionService;
-  
+  auctionService = new AuctionService();
+
   async create(token: string | undefined, photo: Buffer | undefined, auctionId: number) {
     try {
       verifyToken(token);
@@ -24,14 +24,14 @@ class AuctionPhotoService {
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
       formData.set('key', process.env.FREEIMAGE_API_KEY!);
-
+      
       const response = await fetch(FreeimageEndpoints.imageUpload, {
         method: 'POST',
         body: formData
       });
 
       const data: ImageCreateResponseDto = await response.json();
-
+      
       const createdAuctionPhoto = await prisma.auctionPhoto.create({
         data: {
           auctionId: auctionId,

@@ -13,11 +13,8 @@ import {
   auctionUpdateJoiSchema
 } from '../../common/joi schemas/auction/auction';
 import validateSchema from '../../validators/validate-schema';
-import AuctionPhotoService from './auction-photo/auction-photo.service';
 
 class AuctionService {
-  auctionPhotoService = new AuctionPhotoService();
-
   async get(id: number) {
     try {
       const auction = await prisma.auction.findUnique({
@@ -45,7 +42,6 @@ class AuctionService {
     token: string | undefined,
     auction: Auction,
     photo: Buffer | undefined,
-    photos: Buffer[]
   ) {
     try {
       const auctionSchema = auctionCreateJoiSchema();
@@ -83,10 +79,6 @@ class AuctionService {
             mainPhoto: data.image.url
           }
         });
-
-        for (const photo of photos) {
-          this.auctionPhotoService.create(token, photo.buffer as Buffer, createdAuction.id);
-        }
 
         return createdAuction;
       } catch (e) {
