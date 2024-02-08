@@ -1,7 +1,6 @@
-import { User } from '@prisma/client';
-
 type UserCreateResponseDto = {
   user: {
+    id: number,
     name: string | null,
     email: string
   };
