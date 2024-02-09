@@ -98,7 +98,6 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
           } as IAuction);
     },
     initialData: () => {
-      console.log("init", queryClient.getQueryData("auctions"));
       return (queryClient.getQueryData("auctions") as IAuction[])?.find(
         (auction) => auction.id === params.auctionId
       );

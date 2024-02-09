@@ -49,7 +49,6 @@ const BetCreator = ({
 
   const { mutate: createAuction, isLoading } = useMutation({
     mutationFn: async (betDto: TNewBetValidator) => {
-      console.log(betDto);
       return axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/auctions/${auctionId}/bets`,
         betDto,

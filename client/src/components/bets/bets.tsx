@@ -32,8 +32,6 @@ const Bets = ({
     },
   });
 
-  console.log(bets);
-
   const [users, maxBet] = useMemo(() => {
     const users: {
       user: IBet["user"];
@@ -63,8 +61,6 @@ const Bets = ({
     users.sort((a, b) => (a.maxBet < b.maxBet ? 1 : -1));
     return [users, maxBet];
   }, [bets, startPrice]);
-
-  console.log(users);
 
   return (
     <div>

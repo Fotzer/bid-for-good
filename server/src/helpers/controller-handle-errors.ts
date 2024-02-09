@@ -7,7 +7,6 @@ async function controllerHandleErrors<T>(res: Response, func: () => T) {
   try {
     return await func();
   } catch (e) {
-    console.log(e);
     if (e instanceof HTTPError) {
       if (e instanceof InternalServerError) {
         console.error(e.message);

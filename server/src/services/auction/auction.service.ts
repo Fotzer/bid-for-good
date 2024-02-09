@@ -205,8 +205,6 @@ class AuctionService {
 
         return createdAuction;
       } catch (e) {
-        console.log(e);
-
         throw new BadRequestError();
       }
     } catch (e) {

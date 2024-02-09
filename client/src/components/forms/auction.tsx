@@ -116,7 +116,6 @@ const AuctionForm = ({ className, auction }: AuctionFormProps) => {
 
   const { mutate: createAuction } = useMutation({
     mutationFn: async (auctionDto: TNewAuctionFormValidator) => {
-      console.log(auctionDto);
       const data = new FormData();
 
       for (const key in auctionDto) {
@@ -184,8 +183,6 @@ const AuctionForm = ({ className, auction }: AuctionFormProps) => {
       });
     },
   });
-
-  console.log(auction);
 
   const form = useForm<TNewAuctionFormValidator>({
     values: isUpdating
