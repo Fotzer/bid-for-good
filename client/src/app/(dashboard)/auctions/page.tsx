@@ -2,8 +2,11 @@
 
 import Auction from "@/components/auction/auction";
 import AuctionLoader from "@/components/auction/auction-loader";
+import { Button } from "@/components/ui/button";
 import { IAuction } from "@/types/auction";
 import axios from "axios";
+import { Plus, PlusSquare } from "lucide-react";
+import Link from "next/link";
 import { useQuery } from "react-query";
 
 const AuctionPage = () => {
@@ -24,8 +27,16 @@ const AuctionPage = () => {
   });
 
   return (
-    <div className="mx-auto w-full max-w-screen-xl px-4 md:px-8">
-      <h1 className="text-4xl font-semibold mb-6">Auctions</h1>
+    <>
+      <div className="flex mb-4 sm:mb-0 flex-col sm:flex-row justify-between">
+        <h1 className="text-4xl font-semibold mb-6">Auctions</h1>
+        <Link href={"/auctions/new"}>
+          <Button size={"lg"}>
+            <Plus className="-ml-2 mr-2 h-5 w-5" />
+            New Auction
+          </Button>
+        </Link>
+      </div>
       {isError ? (
         <h2 className="text-center font-semibold text-red-500 text-lg md:text-2xl">
           An Error ocurred during auctions load
@@ -42,7 +53,7 @@ const AuctionPage = () => {
             ))
           : null}
       </div>
-    </div>
+    </>
   );
 };
 
