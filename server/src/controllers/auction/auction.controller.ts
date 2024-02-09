@@ -38,7 +38,7 @@ auctionController.delete(
   async (req, res) => {
     res.send(
       await controllerHandleErrors(res, () =>
-      auctionService.delete(Number(req.params.auctionId))
+      auctionService.delete(req.headers['authorization'], Number(req.params.auctionId))
       )
     );
   }
