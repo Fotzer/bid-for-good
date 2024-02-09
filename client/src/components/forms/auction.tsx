@@ -50,6 +50,7 @@ export const NewAuctionFormValidator = z.object({
         return ACCEPTED_IMAGE_TYPES.includes(file?.type);
       }
     }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
+  startPrice: z.number().optional(),
 });
 
 export type TNewAuctionFormValidator = z.infer<typeof NewAuctionFormValidator>;
@@ -66,12 +67,18 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
 
   const { mutate: createAuction } = useMutation({
     mutationFn: async (auctionDto: TNewAuctionFormValidator) => {
+      console.log(auctionDto);
       const data = new FormData();
 
       for (const key in auctionDto) {
         if (key === "photos") {
           // @ts-ignore
-          auctionDto["photos"].forEach(function (image, i) {
+          (Array.isArray(auctionDto["photos"])
+            ? // @ts-ignore
+              auctionDto["photos"]
+            : // @ts-ignore
+              [auctionDto["photos"]]
+          ).forEach(function (image, i) {
             data.append("image_" + i, image);
           });
         } else {
@@ -126,6 +133,7 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
     name,
     description,
     mainPhoto,
+    startPrice,
   }: TNewAuctionFormValidator) => {
     const photos =
       mainPhoto instanceof FileList ? Array.from(mainPhoto) : mainPhoto;
@@ -134,6 +142,7 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
       name,
       description,
       photos,
+      startPrice: startPrice,
     };
 
     console.log(auctionDtoObj);
@@ -176,6 +185,24 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
                   <FormControl>
                     <Textarea
                       placeholder="Type your message here."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="startPrice"
+              render={({ field: { onChange, value, ...field } }) => (
+                <FormItem>
+                  <FormLabel>StartPrice</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      onChange={(e) => onChange(+e.target.value)}
                       {...field}
                     />
                   </FormControl>
