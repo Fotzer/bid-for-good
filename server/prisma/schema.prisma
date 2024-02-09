@@ -18,18 +18,8 @@ model User {
   password  String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Token     Token[]
   Auction   Auction[]
   Bet       Bet[]
-}
-
-model Token {
-  id        Int      @id @default(autoincrement())
-  token     String
-  expires   DateTime
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique
 }
 
 model Auction {
@@ -48,7 +38,7 @@ model Auction {
 model AuctionPhoto {
   id        Int     @id @default(autoincrement())
   photoLink String
-  auction   Auction @relation(fields: [auctionId], references: [id])
+  auction   Auction @relation(fields: [auctionId], references: [id], onDelete: Cascade)
   auctionId Int
 }
 
@@ -58,6 +48,6 @@ model Bet {
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   createdAt DateTime @default(now())
-  auction   Auction  @relation(fields: [auctionId], references: [id])
+  auction   Auction  @relation(fields: [auctionId], references: [id], onDelete: Cascade)
   auctionId Int
 }
