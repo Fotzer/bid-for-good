@@ -3,7 +3,7 @@ export interface IAuction {
   startPrice: number;
   createdAt: string;
   userId: number;
-  mainPhoto: string;
+  mainPhoto: string | string[];
   name: string;
   description: string;
 }

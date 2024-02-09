@@ -96,9 +96,11 @@ const AuctionPage = () => {
   return (
     <>
       <div className="flex mb-4 sm:mb-0 flex-col sm:flex-row justify-between">
-        <div className="flex gap-6 items-center mb-6">
-          <h1 className="text-4xl font-semibold">Auctions</h1>
-          <div className="flex  items-center gap-2">
+        <div className="flex flex-col md:flex-row gap-6 items-center mb-6">
+          <h1 className="text-4xl font-semibold self-start md:self-none">
+            Auctions
+          </h1>
+          <div className="flex flex-col sm:flex-row items-center gap-2 self-start sm:self-none">
             <Tabs defaultValue={status ?? ""} className="overflow-x-auto">
               <TabsList>
                 {[AuctionStatusT.ALL, AuctionStatusT.MY].map((value) => (

@@ -1,10 +1,11 @@
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
+import { cn } from "@/lib/utils";
 
-const AuctionLoader = () => {
+const AuctionLoader = ({ className }: { className?: string }) => {
   return (
-    <Card className="flex flex-col justify-between">
+    <Card className={cn("flex flex-col justify-between", className)}>
       <CardHeader className="flex-row gap-4 items-center">
         <Skeleton className="w-12 h-12 rounded-full" />
         <Skeleton className="h-6 flex-grow" />

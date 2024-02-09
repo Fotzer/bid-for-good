@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { toast } from "../ui/use-toast";
+import Link from "next/link";
 
 interface AuctionProps {
   auction: IAuction;
@@ -122,7 +123,7 @@ const Auction: React.FC<AuctionProps> = ({ auction, userId, token }) => {
       <CardContent className="space-y-3">
         <div className="relative w-full h-[200px]">
           <Image
-            src={auction.mainPhoto}
+            src={auction.mainPhoto as string}
             alt={auction.name}
             fill
             objectFit="cover"
@@ -132,7 +133,9 @@ const Auction: React.FC<AuctionProps> = ({ auction, userId, token }) => {
         <p className="text-black/85">{auction.description}</p>
       </CardContent>
       <CardFooter className="flex flex-col-reverse items-stretch gap-2">
-        <Button>View Auction</Button>
+        <Link href={`/auctions/${auction.id}`} className="w-full">
+          <Button className="w-full">View Auction</Button>
+        </Link>
         <div className="flex gap-2">
           <p className="font-semibold text-lg">Start Price: </p>
           <Badge variant="outline">{auction.startPrice} $</Badge>
