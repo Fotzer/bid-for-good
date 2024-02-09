@@ -212,7 +212,7 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
               <p className="max-w-prose text-black/80">{auction.description}</p>
             </div>
             <div className="flex flex-col w-[400px] mt-4 lg:mt-0">
-              <Bets auctionId={auction.id} />
+              <Bets auctionId={auction.id} startPrice={auction.startPrice} />
             </div>
           </div>
         </div>

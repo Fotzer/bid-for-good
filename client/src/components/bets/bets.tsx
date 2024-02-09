@@ -10,7 +10,13 @@ import { Separator } from "../ui/separator";
 import BetCreator from "./bet-creator";
 import BetsHistory from "./bets-history";
 
-const Bets = ({ auctionId }: { auctionId: string }) => {
+const Bets = ({
+  auctionId,
+  startPrice,
+}: {
+  auctionId: string;
+  startPrice: number;
+}) => {
   const {
     data: bets,
     isLoading,
@@ -28,13 +34,19 @@ const Bets = ({ auctionId }: { auctionId: string }) => {
 
   console.log(bets);
 
-  const users = useMemo(() => {
+  const [users, maxBet] = useMemo(() => {
     const users: {
       user: IBet["user"];
       maxBet: number;
     }[] = [];
 
+    let maxBet = startPrice;
+
     bets?.forEach((bet) => {
+      if (bet.betValue > maxBet) {
+        maxBet = bet.betValue;
+      }
+
       const user = users.find(
         (userInfo) => userInfo.user.email === bet.user.email
       );
@@ -49,8 +61,8 @@ const Bets = ({ auctionId }: { auctionId: string }) => {
     });
 
     users.sort((a, b) => (a.maxBet < b.maxBet ? 1 : -1));
-    return users;
-  }, [bets]);
+    return [users, maxBet];
+  }, [bets, startPrice]);
 
   console.log(users);
 
@@ -97,7 +109,7 @@ const Bets = ({ auctionId }: { auctionId: string }) => {
 
       {users.length > 0 ? <BetsHistory bets={bets} /> : null}
 
-      <BetCreator auctionId={auctionId} />
+      <BetCreator auctionId={auctionId} minValue={maxBet} />
     </div>
   );
 };

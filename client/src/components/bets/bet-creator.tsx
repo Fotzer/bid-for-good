@@ -20,16 +20,22 @@ import axios from "axios";
 import { useAuth } from "@/providers/auth";
 import { toast } from "../ui/use-toast";
 
-export const NewBetValidator = z.object({
-  betValue: z
-    .number()
-    .min(0, "Bet should be larger than 0")
-    .max(2147483647, "Bet should be lower than 2147483647"),
-});
+const BetCreator = ({
+  auctionId,
+  minValue,
+}: {
+  auctionId: string;
+  minValue: number;
+}) => {
+  const NewBetValidator = z.object({
+    betValue: z
+      .number()
+      .min(minValue, `Bet should be larger than ${minValue}`)
+      .max(2147483647, "Bet should be lower than 2147483647"),
+  });
 
-type TNewBetValidator = z.infer<typeof NewBetValidator>;
+  type TNewBetValidator = z.infer<typeof NewBetValidator>;
 
-const BetCreator = ({ auctionId }: { auctionId: string }) => {
   const form = useForm<TNewBetValidator>({
     values: {
       betValue: 0,
