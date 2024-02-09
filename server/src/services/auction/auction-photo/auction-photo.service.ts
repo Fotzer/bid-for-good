@@ -21,8 +21,6 @@ class AuctionPhotoService {
 
       await this.auctionService.get(auctionId);
 
-     
-
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
       formData.set('key', process.env.FREEIMAGE_API_KEY!);
@@ -106,6 +104,24 @@ class AuctionPhotoService {
       } catch (e) {
         throw new NotFoundError();
       }
+    } catch (e) {
+      if (e instanceof HTTPError) {
+        throw e;
+      } else if (e instanceof Error) {
+        throw new InternalServerError(e.message);
+      }
+    }
+  }
+
+  async deleteAll(token: string, auctionId: number) {
+    try {
+      verifyToken(token);
+
+      await prisma.auctionPhoto.deleteMany({
+        where: {
+          auctionId
+        }
+      });
     } catch (e) {
       if (e instanceof HTTPError) {
         throw e;

@@ -25,9 +25,7 @@ auctionController.get(
   validateParamsNumberMiddleware(['auctionId']),
   async (req, res) => {
     res.send(
-      await controllerHandleErrors(res, () =>
-      auctionService.get(Number(req.params.auctionId))
-      )
+      await controllerHandleErrors(res, () => auctionService.get(Number(req.params.auctionId)))
     );
   }
 );
@@ -38,7 +36,7 @@ auctionController.delete(
   async (req, res) => {
     res.send(
       await controllerHandleErrors(res, () =>
-      auctionService.delete(req.headers['authorization'], Number(req.params.auctionId))
+        auctionService.delete(req.headers['authorization'], Number(req.params.auctionId))
       )
     );
   }
@@ -46,7 +44,7 @@ auctionController.delete(
 
 auctionController.post('/', upload.any(), transformAuctionMiddleware, async (req, res) => {
   console.log(req.files);
-  
+
   res.statusCode = HTTPStatus.Created.status;
   res.send(
     await controllerHandleErrors(res, async () => {
@@ -79,19 +77,32 @@ auctionController.post('/', upload.any(), transformAuctionMiddleware, async (req
 
 auctionController.put(
   '/:id',
-  upload.single('photo'),
+  upload.any(),
   transformAuctionMiddleware,
   validateParamsNumberMiddleware(['id']),
   async (req, res) => {
     res.send(
-      await controllerHandleErrors(res, () =>
-        auctionService.update(
+      await controllerHandleErrors(res, async () => {
+        await auctionPhotoService.deleteAll(req.headers['authorization']!, +req.params.id);
+        await Promise.all(
+          (req.files as MulterFile[])
+            .slice(1)
+            .map(
+              async (auctionPhoto) =>
+                await auctionPhotoService.create(
+                  req.headers['authorization'],
+                  auctionPhoto.buffer,
+                  +req.params.id!
+                )
+            )
+        );
+        return auctionService.update(
           req.headers['authorization'],
           Number(req.params.id),
           req.body,
-          req.file?.buffer
-        )
-      )
+          (req.files as MulterFile[])[0].buffer
+        );
+      })
     );
   }
 );
