@@ -34,7 +34,7 @@ class AuctionService {
           }
         }
       });
-      
+
       if (!auction) {
         throw new NotFoundError();
       }
@@ -75,10 +75,10 @@ class AuctionService {
       return {
         ...auction,
         Bet: undefined,
-        currentBet: auction.Bet[0].betValue
+        currentBet: auction.Bet[0]?.betValue
       };
-    }
-    catch(e) {
+    } catch (e) {
+      console.log(e);
       throw new NotFoundError();
     }
   }
@@ -213,7 +213,7 @@ class AuctionService {
   async getUsers(id: number) {
     try {
       await this.get(id);
-      
+
       const users = await prisma.bet.findMany({
         where: {
           auctionId: id
