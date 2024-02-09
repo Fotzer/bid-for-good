@@ -59,6 +59,14 @@ class BetService {
         },
         orderBy: {
           createdAt: 'desc'
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true
+            }
+          }
         }
       });
 
