@@ -21,6 +21,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
+import { IAuction } from "@/types/auction";
 
 export const NewAuctionFormValidator = z.object({
   name: z.string().trim().min(1, { message: "Please enter a valid name" }),
@@ -58,21 +59,64 @@ export const NewAuctionFormValidator = z.object({
     .optional(),
 });
 
+export const UpdateAuctionFormValidator = z.object({
+  name: z.string().trim().min(1, { message: "Please enter a valid name" }),
+  description: z
+    .string()
+    .min(10, {
+      message: "Please enter a description at least 10 characters long",
+    })
+    .max(
+      500,
+      "Please enter a description with length less than 500 characters"
+    ),
+  mainPhoto: z
+    .any()
+    .refine((file) => {
+      if (!file) return true;
+      if (file instanceof FileList) {
+        return Array.from(file).every((file) => file?.size <= MAX_FILE_SIZE);
+      } else {
+        return file?.size <= MAX_FILE_SIZE;
+      }
+    }, `Max image size is 5MB.`)
+    .refine((file) => {
+      if (!file) return true;
+      if (file instanceof FileList) {
+        return Array.from(file).every((file) =>
+          ACCEPTED_IMAGE_TYPES.includes(file?.type)
+        );
+      } else {
+        return ACCEPTED_IMAGE_TYPES.includes(file?.type);
+      }
+    }, "Only .jpg, .jpeg, .png and .webp formats are supported.")
+    .optional(),
+  startPrice: z
+    .number()
+    .min(0, "Price should be larger than 0")
+    .max(2147483647, "Price should be lower than 2147483647")
+    .optional(),
+});
+
 export type TNewAuctionFormValidator = z.infer<typeof NewAuctionFormValidator>;
 
 export type AuctionFormProps = {
   className?: string;
+  auction?: IAuction;
 };
 
-const AuctionForm = ({ className }: AuctionFormProps) => {
+const AuctionForm = ({ className, auction }: AuctionFormProps) => {
   const { toast } = useToast();
   const { token } = useAuth();
 
   const queryClient = useQueryClient();
   const router = useRouter();
 
+  const isUpdating = !!auction;
+
   const { mutate: createAuction } = useMutation({
     mutationFn: async (auctionDto: TNewAuctionFormValidator) => {
+      console.log(auctionDto);
       const data = new FormData();
 
       for (const key in auctionDto) {
@@ -92,42 +136,68 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
         }
       }
 
-      return axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auctions`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      if (isUpdating) {
+        return axios.put(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/auctions/${auction.id}`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      } else {
+        return axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/auctions`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
     },
     onSuccess: () => {
       toast({
-        title: "Auction created successfully updated",
+        title: `Auction ${
+          isUpdating ? "updated" : "created"
+        } successfully updated`,
         duration: 5000,
       });
       queryClient.invalidateQueries({ queryKey: ["auctions"] });
-      router.push("/auctions");
+      if (isUpdating) {
+        router.push("/auctions/" + auction.id);
+      } else {
+        router.push("/auctions");
+      }
     },
     onError: () => {
       toast({
         title: "An unknown error occurred",
         variant: "destructive",
-        description:
-          "We encountered an unknown error while attempting to create your auction. Please try again later.",
+        description: `We encountered an unknown error while attempting to ${
+          isUpdating ? "update" : "create"
+        } your auction. Please try again later.`,
       });
     },
   });
 
+  console.log(auction);
+
   const form = useForm<TNewAuctionFormValidator>({
-    values: {
-      name: "",
-      description: "",
-      mainPhoto: "",
-    },
-    resolver: zodResolver(NewAuctionFormValidator),
+    values: isUpdating
+      ? { ...auction, mainPhoto: null }
+      : {
+          name: "",
+          description: "",
+          mainPhoto: "",
+        },
+    resolver: zodResolver(
+      isUpdating ? UpdateAuctionFormValidator : NewAuctionFormValidator
+    ),
     reValidateMode: "onChange",
   });
 
@@ -141,11 +211,17 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
   }: TNewAuctionFormValidator) => {
     const photos =
       mainPhoto instanceof FileList ? Array.from(mainPhoto) : mainPhoto;
+
+    if (!photos) {
+      createAuction({ name, description, startPrice });
+      return;
+    }
+
     const auctionDtoObj = {
       name,
       description,
       photos,
-      startPrice: startPrice,
+      startPrice,
     };
 
     createAuction(auctionDtoObj);
@@ -153,7 +229,9 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
 
   return (
     <div className="flex flex-col space-y-6 max-w-3xl mx-auto">
-      <h1 className="text-4xl font-semibold">New Auction</h1>
+      <h1 className="text-4xl font-semibold">
+        {isUpdating ? "Update Auction" : "New Auction"}
+      </h1>
       <Form {...form}>
         <form
           className={cn("flex w-full flex-col gap-y-4", className)}
@@ -197,7 +275,7 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
             <FormField
               control={form.control}
               name="startPrice"
-              render={({ field: { onChange, value, ...field } }) => (
+              render={({ field: { onChange, ...field } }) => (
                 <FormItem>
                   <FormLabel>StartPrice</FormLabel>
                   <FormControl>
@@ -244,7 +322,9 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
           </fieldset>
 
           <Button type="submit" size="lg" loading={isSubmitting}>
-            {isSubmitting ? "Creating auction..." : "Create auction"}
+            {isSubmitting
+              ? `${isUpdating ? "Updating" : "Creating"} auction...`
+              : `${isUpdating ? "Update" : "Create"} auction`}
           </Button>
         </form>
       </Form>

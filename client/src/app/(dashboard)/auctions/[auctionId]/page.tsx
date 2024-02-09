@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Settings, Pencil, Trash } from "lucide-react";
+import Link from "next/link";
 
 const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
   const queryClient = useQueryClient();
@@ -104,9 +105,14 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
                       <DropdownMenuContent>
                         <DropdownMenuLabel>Settings</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="flex items-center gap-1.5">
-                          <Pencil className="w-4 h-4" />
-                          Edit
+                        <DropdownMenuItem>
+                          <Link
+                            href={`/auctions/${auction.id}/update`}
+                            className="flex items-center gap-1.5"
+                          >
+                            <Pencil className="w-4 h-4" />
+                            Edit
+                          </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="flex items-center gap-1.5">
                           <Trash className="w-4 h-4" />
