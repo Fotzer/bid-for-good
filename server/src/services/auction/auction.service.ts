@@ -53,11 +53,14 @@ class AuctionService {
     }
   }
 
-  async delete(id: number) {
+  async delete(token: string | undefined, id: number) {
     try {
+      const payload = verifyToken(token);
+
       const auction = await prisma.auction.delete({
         where: {
-          id: id
+          id: id,
+          userId: payload!.userId
         },
         include: {
           Bet: {
@@ -71,14 +74,21 @@ class AuctionService {
           }
         }
       });
-
+      
+      
       return {
         ...auction,
         Bet: undefined,
-        currentBet: auction.Bet[0].betValue
+        currentBet: auction.Bet.length !== 0 ? auction.Bet[0].betValue : auction.startPrice
       };
     }
     catch(e) {
+      console.error(e);
+
+      if (e instanceof HTTPError) {
+        throw e;
+      }
+      
       throw new NotFoundError();
     }
   }
