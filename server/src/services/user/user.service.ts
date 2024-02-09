@@ -97,14 +97,6 @@ class UserService {
 
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!);
 
-      await prisma.token.create({
-        data: {
-          token: token,
-          userId: user.id,
-          expires: new Date(new Date().getTime() + expireTimeInMilliseconds)
-        }
-      });
-
       return {
         user: {
           id: user.id,

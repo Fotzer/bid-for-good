@@ -56,23 +56,9 @@ class AuthService {
         throw new UnauthorizedError(UserErrorMessage.wrongPassword);
       }
 
-      let token = await prisma.token.findUnique({
-        where: {
-          userId: user.id
-        }
-      });
 
-      if (!token) {
-        const tokenString = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!);
+      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!);
 
-        token = await prisma.token.create({
-          data: {
-            token: tokenString,
-            userId: user.id,
-            expires: new Date(new Date().getTime() + expireTimeInMilliseconds)
-          }
-        });
-      }
 
       return {
         user: {
@@ -80,7 +66,7 @@ class AuthService {
           email: user.email,
           name: user.name
         },
-        token: token.token
+        token: token
       };
     } catch (e) {
       if (e instanceof HTTPError) {

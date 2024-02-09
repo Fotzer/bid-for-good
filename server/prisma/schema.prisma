@@ -18,18 +18,8 @@ model User {
   password  String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Token     Token[]
   Auction   Auction[]
   Bet       Bet[]
-}
-
-model Token {
-  id        Int      @id @default(autoincrement())
-  token     String
-  expires   DateTime
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique
 }
 
 model Auction {
