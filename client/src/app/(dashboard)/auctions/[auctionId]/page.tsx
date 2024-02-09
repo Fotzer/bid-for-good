@@ -107,104 +107,109 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
   return (
     <>
       {auction ? (
-        <div className="flex flex-col lg:flex-row">
-          <div className="flex flex-col flex-1">
-            <div className="flex lg:max-w-xl">
-              <div className="flex-1">
-                <h2 className="text-4xl font-semibold">{auction?.name}</h2>
-                <p className="text-sm text-muted-foreground">
-                  {format(auctionCreatedAt, "MMMM dd, yyyy HH:mm:ss")}
-                </p>
-
-                <div className="mt-3">
-                  <span className="text-sm">Start Price: </span>
-                  <Badge variant={"secondary"}>{auction.startPrice} $</Badge>
+        <div className="relative">
+          <Link
+            className="absolute -top-[35px] -left-[16px] md:-top-[42px] md:-left-[10px]"
+            href={"/auctions"}
+          >
+            <Button variant="link">&larr; Back</Button>
+          </Link>
+          <div className="flex flex-col lg:flex-row">
+            <div className="flex flex-col flex-1">
+              <div className="flex lg:max-w-xl">
+                <div className="flex-1">
+                  <h2 className="text-4xl font-semibold">{auction?.name}</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {format(auctionCreatedAt, "MMMM dd, yyyy HH:mm:ss")}
+                  </p>
+                  <div className="mt-3">
+                    <span className="text-sm">Start Price: </span>
+                    <Badge variant={"secondary"}>{auction.startPrice} $</Badge>
+                  </div>
+                </div>
+                <div className="flex flex-col-reverse items-center gap-2 self-start">
+                  {user?.id === auction.userId ? (
+                    <div className="self-end">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-7 px-2.5"
+                          >
+                            <Settings className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>
+                            <Link
+                              href={`/auctions/${auction.id}/update`}
+                              className="flex items-center gap-1.5"
+                            >
+                              <Pencil className="w-4 h-4" />
+                              Edit
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="flex items-center gap-1.5"
+                            onClick={() => {
+                              deleteAuction();
+                            }}
+                          >
+                            <Trash className="w-4 h-4" />
+                            {isDeleting ? "Deleting..." : "Delete"}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  ) : null}
                 </div>
               </div>
-              <div className="flex flex-col-reverse items-center gap-2 self-start">
-                {user?.id === auction.userId ? (
-                  <div className="self-end">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-7 px-2.5"
-                        >
-                          <Settings className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel>Settings</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Link
-                            href={`/auctions/${auction.id}/update`}
-                            className="flex items-center gap-1.5"
-                          >
-                            <Pencil className="w-4 h-4" />
-                            Edit
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="flex items-center gap-1.5"
-                          onClick={() => {
-                            deleteAuction();
-                          }}
-                        >
-                          <Trash className="w-4 h-4" />
-                          {isDeleting ? "Deleting..." : "Delete"}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                ) : null}
-              </div>
+              {auction.mainPhoto.length > 1 ? (
+                <div className="px-14">
+                  <Carousel className="w-ful lg:max-w-[500px] xl:max-w-[600px] my-4">
+                    <CarouselContent>
+                      {(auction.mainPhoto as string[]).map((photo, index) => (
+                        <CarouselItem key={index}>
+                          <div className="p-1">
+                            <Card>
+                              <CardContent className="flex items-center justify-center p-6">
+                                <div className="h-[150px] sm:h-[200px] md:h-[300px] w-[500px] relative">
+                                  <Image
+                                    src={photo}
+                                    alt={photo}
+                                    fill
+                                    objectFit="cover"
+                                    objectPosition="center"
+                                  />
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                  </Carousel>
+                </div>
+              ) : (
+                <div className="relative h-[300px] w-[500px] my-4">
+                  <Image
+                    src={auction.mainPhoto[0]}
+                    alt={auction.name}
+                    fill
+                    objectFit="cover"
+                    objectPosition="center"
+                  />
+                </div>
+              )}
+              <p className="max-w-prose text-black/80">{auction.description}</p>
             </div>
-
-            {auction.mainPhoto.length > 1 ? (
-              <div className="px-14">
-                <Carousel className="w-ful lg:max-w-[500px] xl:max-w-[600px] my-4">
-                  <CarouselContent>
-                    {(auction.mainPhoto as string[]).map((photo, index) => (
-                      <CarouselItem key={index}>
-                        <div className="p-1">
-                          <Card>
-                            <CardContent className="flex items-center justify-center p-6">
-                              <div className="h-[150px] sm:h-[200px] md:h-[300px] w-[500px] relative">
-                                <Image
-                                  src={photo}
-                                  alt={photo}
-                                  fill
-                                  objectFit="cover"
-                                  objectPosition="center"
-                                />
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>
-              </div>
-            ) : (
-              <div className="relative h-[300px] w-[500px] my-4">
-                <Image
-                  src={auction.mainPhoto[0]}
-                  alt={auction.name}
-                  fill
-                  objectFit="cover"
-                  objectPosition="center"
-                />
-              </div>
-            )}
-
-            <p className="max-w-prose text-black/80">{auction.description}</p>
+            <div className="flex flex-col w-[400px] bg-red-500"></div>
           </div>
-          <div className="flex flex-col w-[400px] bg-red-500"></div>
         </div>
       ) : null}
 
