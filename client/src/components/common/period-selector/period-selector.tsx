@@ -42,7 +42,10 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = () => {
   };
 
   return (
-    <Select defaultValue={period ?? ""} onValueChange={onPeriodChange}>
+    <Select
+      defaultValue={!!period ? period : " "}
+      onValueChange={onPeriodChange}
+    >
       <SelectTrigger className="text-muted-foreground max-w-[200px]">
         <SelectValue />
       </SelectTrigger>
