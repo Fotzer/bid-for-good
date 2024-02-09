@@ -42,7 +42,7 @@ class AuctionService {
       return {
         ...auction,
         Bet: undefined,
-        currentBet: auction.Bet? auction.Bet[0].betValue : null
+        currentBet: auction.Bet.length !== 0 ? auction.Bet[0].betValue : null
       };
     } catch (e) {
       if (e instanceof HTTPError) {
@@ -74,21 +74,19 @@ class AuctionService {
           }
         }
       });
-      
-      
+
       return {
         ...auction,
         Bet: undefined,
         currentBet: auction.Bet.length !== 0 ? auction.Bet[0].betValue : auction.startPrice
       };
-    }
-    catch(e) {
+    } catch (e) {
       console.error(e);
 
       if (e instanceof HTTPError) {
         throw e;
       }
-      
+
       throw new NotFoundError();
     }
   }
