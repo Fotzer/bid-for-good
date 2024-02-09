@@ -21,6 +21,17 @@ class AuctionService {
       const auction = await prisma.auction.findUnique({
         where: {
           id: id
+        },
+        include: {
+          Bet: {
+            select: {
+              betValue: true
+            },
+            orderBy: {
+              betValue: 'desc'
+            },
+            take: 1
+          }
         }
       });
       
@@ -28,7 +39,11 @@ class AuctionService {
         throw new NotFoundError();
       }
 
-      return auction;
+      return {
+        ...auction,
+        Bet: undefined,
+        currentBet: auction.Bet[0].betValue
+      };
     } catch (e) {
       if (e instanceof HTTPError) {
         throw e;
