@@ -55,36 +55,43 @@ const Bets = ({ auctionId }: { auctionId: string }) => {
   return (
     <div>
       <h3 className="text-3xl font-semibold">Bets</h3>
-      <Card className="mt-3">
-        <CardHeader className="p-4">
-          <CardTitle className="text-lg">Featured Users:</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-0 space-y-3">
-          {users.map((userInfo, i) => (
-            <Fragment key={userInfo.user.email}>
-              <div key={userInfo.user.email} className="flex justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="rounded-full h-5 w-5 text-xs text-white l p-1 bg-blue-500 leading-none grid place-content-center">
-                    {i + 1}
+
+      {users.length > 0 ? (
+        <Card className="mt-3">
+          <CardHeader className="p-4">
+            <CardTitle className="text-lg">Featured Users:</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0 space-y-3">
+            {users.map((userInfo, i) => (
+              <Fragment key={userInfo.user.email}>
+                <div key={userInfo.user.email} className="flex justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="rounded-full h-5 w-5 text-xs text-white l p-1 bg-blue-500 leading-none grid place-content-center">
+                      {i + 1}
+                    </div>
+                    <div>
+                      <h4>{userInfo.user.name}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {userInfo.user.email}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h4>{userInfo.user.name}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {userInfo.user.email}
-                    </p>
-                  </div>
+
+                  <Badge className="bg-black self-start">
+                    {userInfo.maxBet} $
+                  </Badge>
                 </div>
 
-                <Badge className="bg-black self-start">
-                  {userInfo.maxBet} $
-                </Badge>
-              </div>
-
-              {i !== users.length - 1 ? <Separator /> : null}
-            </Fragment>
-          ))}
-        </CardContent>
-      </Card>
+                {i !== users.length - 1 ? <Separator /> : null}
+              </Fragment>
+            ))}
+          </CardContent>
+        </Card>
+      ) : (
+        <p className="mt-2 text-muted-foreground">
+          No Bets for this auction yet
+        </p>
+      )}
     </div>
   );
 };
