@@ -29,6 +29,8 @@ import { Settings, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import Bets from "@/components/bets/bets";
+import BetsLoader from "@/components/bets/bets-loader";
 
 const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
   const queryClient = useQueryClient();
@@ -71,6 +73,8 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
   } = useQuery({
     queryKey: ["auctions", params.auctionId],
     queryFn: async () => {
+      // await new Promise<void>((resolve) => setTimeout(() => resolve(), 45000));
+
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/auctions/${params.auctionId}`
       );
@@ -103,7 +107,6 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
 
   const auctionCreatedAt = parseISO(auction?.createdAt ?? "");
 
-  console.log(auction, auctionCreatedAt);
   return (
     <>
       {auction ? (
@@ -116,7 +119,7 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
           </Link>
           <div className="flex flex-col lg:flex-row">
             <div className="flex flex-col flex-1">
-              <div className="flex lg:max-w-xl">
+              <div className="flex lg:max-w-[655px]">
                 <div className="flex-1">
                   <h2 className="text-4xl font-semibold">{auction?.name}</h2>
                   <p className="text-sm text-muted-foreground">
@@ -208,7 +211,9 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
               )}
               <p className="max-w-prose text-black/80">{auction.description}</p>
             </div>
-            <div className="flex flex-col w-[400px] bg-red-500"></div>
+            <div className="flex flex-col w-[400px] mt-4 lg:mt-0">
+              <Bets auctionId={auction.id} />
+            </div>
           </div>
         </div>
       ) : null}
@@ -218,7 +223,9 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
           <div className="flex flex-col flex-1 mr-20">
             <AuctionLoader className="h-[450px]" />
           </div>
-          <div className="flex flex-col w-[400px] bg-red-500"></div>
+          <div className="flex flex-col w-[400px] mt-4 lg:mt-0">
+            <BetsLoader />
+          </div>
         </div>
       ) : null}
 
