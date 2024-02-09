@@ -67,7 +67,6 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
 
   const { mutate: createAuction } = useMutation({
     mutationFn: async (auctionDto: TNewAuctionFormValidator) => {
-      console.log(auctionDto);
       const data = new FormData();
 
       for (const key in auctionDto) {
@@ -125,8 +124,6 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
     reValidateMode: "onChange",
   });
 
-  console.log(form.getValues());
-
   const isSubmitting = form.formState.isSubmitting;
 
   const onFormSubmit = async ({
@@ -137,15 +134,12 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
   }: TNewAuctionFormValidator) => {
     const photos =
       mainPhoto instanceof FileList ? Array.from(mainPhoto) : mainPhoto;
-    console.log(photos);
     const auctionDtoObj = {
       name,
       description,
       photos,
       startPrice: startPrice,
     };
-
-    console.log(auctionDtoObj);
 
     createAuction(auctionDtoObj);
   };

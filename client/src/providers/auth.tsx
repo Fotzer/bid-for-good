@@ -45,8 +45,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         userDto
       );
 
-      const { email, name } = res.data.user;
-      const user = { email, name };
+      const { email, name, id } = res.data.user;
+      const user = { email, name, id };
       const token = res.data.token;
 
       setUser(user);
@@ -87,8 +87,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           );
 
           if (res.status < 307) {
-            const { email, name } = res.data;
-            setUser({ email, name });
+            const { email, name, id } = res.data;
+            setUser({ email, name, id });
           } else {
             toast({
               variant: "destructive",
@@ -125,8 +125,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         userDto
       );
 
-      const { email, name } = res.data.user;
-      const user = { email, name };
+      const { email, name, id } = res.data.user;
+      const user = { email, name, id };
       const token = res.data.token;
 
       setUser(user);
