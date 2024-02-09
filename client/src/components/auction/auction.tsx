@@ -28,6 +28,7 @@ import {
 } from "../ui/card";
 import { toast } from "../ui/use-toast";
 import Link from "next/link";
+import { useAuth } from "@/providers/auth";
 
 interface AuctionProps {
   auction: IAuction;
@@ -44,7 +45,12 @@ const Auction: React.FC<AuctionProps> = ({ auction, userId, token }) => {
   const { mutate: deleteAuction, isLoading } = useMutation({
     mutationFn: async () => {
       return axios.delete(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auctions/${auction.id}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/auctions/${auction.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
     },
     onSuccess: () => {

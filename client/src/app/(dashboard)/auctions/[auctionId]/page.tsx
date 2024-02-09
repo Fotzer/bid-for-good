@@ -2,7 +2,7 @@
 
 import { IAuction } from "@/types/auction";
 import axios from "axios";
-import { useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { format, parseISO } from "date-fns";
 import Image from "next/image";
 import {
@@ -27,10 +27,42 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Settings, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
+import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const router = useRouter();
+
+  const { mutate: deleteAuction, isLoading: isDeleting } = useMutation({
+    mutationFn: async () => {
+      return axios.delete(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/auctions/${params.auctionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    onSuccess: () => {
+      toast({
+        title: "Auction deleted successfully",
+        duration: 5000,
+      });
+      queryClient.invalidateQueries("auctions");
+      router.push("/auctions");
+    },
+    onError: () => {
+      toast({
+        title: "An unknown error occurred",
+        variant: "destructive",
+        description:
+          "We encountered an unknown error while attempting to delete your auction. Please try again later.",
+      });
+    },
+  });
 
   const {
     data: auction,
@@ -114,9 +146,14 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
                             Edit
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center gap-1.5">
+                        <DropdownMenuItem
+                          className="flex items-center gap-1.5"
+                          onClick={() => {
+                            deleteAuction();
+                          }}
+                        >
                           <Trash className="w-4 h-4" />
-                          Delete
+                          {isDeleting ? "Deleting..." : "Delete"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
