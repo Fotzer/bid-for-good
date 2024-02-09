@@ -32,6 +32,18 @@ auctionController.get(
   }
 );
 
+auctionController.delete(
+  '/:auctionId/',
+  validateParamsNumberMiddleware(['auctionId']),
+  async (req, res) => {
+    res.send(
+      await controllerHandleErrors(res, () =>
+      auctionService.delete(Number(req.params.auctionId))
+      )
+    );
+  }
+);
+
 auctionController.post('/', upload.any(), transformAuctionMiddleware, async (req, res) => {
   console.log(req.files);
   

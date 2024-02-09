@@ -53,6 +53,36 @@ class AuctionService {
     }
   }
 
+  async delete(id: number) {
+    try {
+      const auction = await prisma.auction.delete({
+        where: {
+          id: id
+        },
+        include: {
+          Bet: {
+            select: {
+              betValue: true
+            },
+            orderBy: {
+              betValue: 'desc'
+            },
+            take: 1
+          }
+        }
+      });
+
+      return {
+        ...auction,
+        Bet: undefined,
+        currentBet: auction.Bet[0].betValue
+      };
+    }
+    catch(e) {
+      throw new NotFoundError();
+    }
+  }
+
   async create(token: string | undefined, auction: Auction, photo: Buffer | undefined) {
     try {
       const auctionSchema = auctionCreateJoiSchema();
