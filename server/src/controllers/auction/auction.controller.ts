@@ -84,23 +84,25 @@ auctionController.put(
     res.send(
       await controllerHandleErrors(res, async () => {
         await auctionPhotoService.deleteAll(req.headers['authorization']!, +req.params.id);
-        await Promise.all(
-          (req.files as MulterFile[])
-            .slice(1)
-            .map(
-              async (auctionPhoto) =>
-                await auctionPhotoService.create(
-                  req.headers['authorization'],
-                  auctionPhoto.buffer,
-                  +req.params.id!
-                )
-            )
-        );
+        if (req.files) {
+          await Promise.all(
+            (req.files as MulterFile[])
+              .slice(1)
+              .map(
+                async (auctionPhoto) =>
+                  await auctionPhotoService.create(
+                    req.headers['authorization'],
+                    auctionPhoto.buffer,
+                    +req.params.id!
+                  )
+              )
+          );
+        }
         return auctionService.update(
           req.headers['authorization'],
           Number(req.params.id),
           req.body,
-          (req.files as MulterFile[])[0].buffer
+          req.files ? (req.files as MulterFile[])[0]?.buffer : undefined
         );
       })
     );
