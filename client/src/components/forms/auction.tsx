@@ -20,6 +20,7 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export const NewAuctionFormValidator = z.object({
   name: z.string().trim().min(1, { message: "Please enter a valid name" }),
@@ -50,7 +51,11 @@ export const NewAuctionFormValidator = z.object({
         return ACCEPTED_IMAGE_TYPES.includes(file?.type);
       }
     }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
-  startPrice: z.number().optional(),
+  startPrice: z
+    .number()
+    .min(0, "Price should be larger than 0")
+    .max(2147483647, "Price should be lower than 2147483647")
+    .optional(),
 });
 
 export type TNewAuctionFormValidator = z.infer<typeof NewAuctionFormValidator>;
@@ -64,6 +69,7 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
   const { token } = useAuth();
 
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { mutate: createAuction } = useMutation({
     mutationFn: async (auctionDto: TNewAuctionFormValidator) => {
@@ -103,6 +109,7 @@ const AuctionForm = ({ className }: AuctionFormProps) => {
         duration: 5000,
       });
       queryClient.invalidateQueries({ queryKey: ["auctions"] });
+      router.push("/auctions");
     },
     onError: () => {
       toast({

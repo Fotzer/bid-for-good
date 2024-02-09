@@ -40,7 +40,7 @@ const AuctionPage = () => {
     },
   });
 
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   const status = isAuctionStatus(searchParams.get("status"))
     ? searchParams.get("status")
@@ -84,7 +84,14 @@ const AuctionPage = () => {
 
   const content = (
     status === AuctionStatusT.ALL ? allAuctions : myAuctions
-  )?.map((auction) => <Auction key={auction.id} auction={auction} />);
+  )?.map((auction) => (
+    <Auction
+      key={auction.id}
+      auction={auction}
+      userId={user?.id}
+      token={token}
+    />
+  ));
 
   return (
     <>
