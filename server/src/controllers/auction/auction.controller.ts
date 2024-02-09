@@ -83,8 +83,8 @@ auctionController.put(
   async (req, res) => {
     res.send(
       await controllerHandleErrors(res, async () => {
-        await auctionPhotoService.deleteAll(req.headers['authorization']!, +req.params.id);
-        if (req.files) {
+        if (req.files && Object.keys(req.files).length > 1) {
+          await auctionPhotoService.deleteAll(req.headers['authorization']!, +req.params.id);
           await Promise.all(
             (req.files as MulterFile[])
               .slice(1)
