@@ -53,6 +53,7 @@ const AuctionPage = () => {
 
   const myAuctions = useMemo(
     () =>
+      auctions &&
       auctions?.filter(
         (auction) =>
           auction.userId === user?.id &&
@@ -63,6 +64,7 @@ const AuctionPage = () => {
 
   const allAuctions = useMemo(
     () =>
+      auctions &&
       auctions?.filter((auction) => isWithinPeriod(auction.createdAt, period)),
     [auctions, period]
   );

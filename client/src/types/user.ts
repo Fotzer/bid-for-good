@@ -4,10 +4,10 @@ export interface IUser {
   id: number;
 }
 
-export interface IUserSignIn extends Omit<IUser, "name"> {
+export interface IUserSignIn extends Pick<IUser, "email"> {
   password: string;
 }
 
-export interface IUserSignUp extends IUser {
+export interface IUserSignUp extends Omit<IUser, "id"> {
   password: string;
 }
