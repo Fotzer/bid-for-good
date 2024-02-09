@@ -7,6 +7,7 @@ import { useQuery } from "react-query";
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
+import BetCreator from "./bet-creator";
 
 const Bets = ({ auctionId }: { auctionId: string }) => {
   const {
@@ -77,7 +78,7 @@ const Bets = ({ auctionId }: { auctionId: string }) => {
                     </div>
                   </div>
 
-                  <Badge className="bg-black self-start">
+                  <Badge className="bg-black hover:bg-black/80 self-start">
                     {userInfo.maxBet} $
                   </Badge>
                 </div>
@@ -92,6 +93,8 @@ const Bets = ({ auctionId }: { auctionId: string }) => {
           No Bets for this auction yet
         </p>
       )}
+
+      <BetCreator auctionId={auctionId} />
     </div>
   );
 };
