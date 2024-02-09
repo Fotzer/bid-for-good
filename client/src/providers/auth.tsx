@@ -61,6 +61,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    if (pathname === "/sign-up") return;
+
     const { CancelToken } = axios;
     const source = CancelToken.source();
 
