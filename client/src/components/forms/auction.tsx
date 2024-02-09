@@ -281,7 +281,9 @@ const AuctionForm = ({ className, auction }: AuctionFormProps) => {
                   <FormControl>
                     <Input
                       type="text"
-                      onChange={(e) => onChange(+e.target.value)}
+                      onChange={(e) =>
+                        onChange(isNaN(+e.target.value) ? 0 : +e.target.value)
+                      }
                       {...field}
                     />
                   </FormControl>

@@ -95,7 +95,9 @@ const BetCreator = ({ auctionId }: { auctionId: string }) => {
                   <FormControl>
                     <div className="flex">
                       <Input
-                        onChange={(e) => onChange(+e.target.value)}
+                        onChange={(e) =>
+                          onChange(isNaN(+e.target.value) ? 0 : +e.target.value)
+                        }
                         type="text"
                         {...field}
                       />

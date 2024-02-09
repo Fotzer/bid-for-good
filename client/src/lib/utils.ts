@@ -1,6 +1,6 @@
 import { PeriodSelectorValue } from "@/components/common/period-selector/types";
 import { type ClassValue, clsx } from "clsx";
-import { parseISO, differenceInDays } from "date-fns";
+import { parseISO, differenceInDays, formatDistanceToNow } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -31,4 +31,9 @@ export const isWithinPeriod = (
     default:
       return true;
   }
+};
+
+export const formatRelativeTime = (isoDateString: string): string => {
+  const date = parseISO(isoDateString);
+  return formatDistanceToNow(date, { addSuffix: true });
 };

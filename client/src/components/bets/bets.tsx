@@ -8,6 +8,7 @@ import { Badge } from "../ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
 import BetCreator from "./bet-creator";
+import BetsHistory from "./bets-history";
 
 const Bets = ({ auctionId }: { auctionId: string }) => {
   const {
@@ -60,7 +61,7 @@ const Bets = ({ auctionId }: { auctionId: string }) => {
       {users.length > 0 ? (
         <Card className="mt-3">
           <CardHeader className="p-4">
-            <CardTitle className="text-lg">Featured Users:</CardTitle>
+            <CardTitle className="text-lg">User Rating:</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0 space-y-3">
             {users.map((userInfo, i) => (
@@ -93,6 +94,8 @@ const Bets = ({ auctionId }: { auctionId: string }) => {
           No Bets for this auction yet
         </p>
       )}
+
+      {users.length > 0 ? <BetsHistory bets={bets} /> : null}
 
       <BetCreator auctionId={auctionId} />
     </div>
