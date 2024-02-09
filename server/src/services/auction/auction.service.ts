@@ -42,7 +42,7 @@ class AuctionService {
       return {
         ...auction,
         Bet: undefined,
-        currentBet: auction.Bet[0].betValue
+        currentBet: auction.Bet? auction.Bet[0].betValue : null
       };
     } catch (e) {
       if (e instanceof HTTPError) {
