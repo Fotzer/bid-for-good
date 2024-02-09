@@ -33,6 +33,8 @@ auctionController.get(
 );
 
 auctionController.post('/', upload.any(), transformAuctionMiddleware, async (req, res) => {
+  console.log(req.files);
+  
   res.statusCode = HTTPStatus.Created.status;
   res.send(
     await controllerHandleErrors(res, async () => {
