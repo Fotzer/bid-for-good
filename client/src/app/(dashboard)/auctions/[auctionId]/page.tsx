@@ -218,11 +218,11 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
       ) : null}
 
       {isLoading ? (
-        <div className="flex">
+        <div className="flex flex-col lg:flex-row">
           <div className="flex flex-col flex-1 mr-20">
             <AuctionLoader className="h-[450px]" />
           </div>
-          <div className="flex flex-col w-[400px] mt-4 lg:mt-0">
+          <div className="flex flex-col w-full sm:w-[450px] md:w-[400px] mt-4 lg:mt-0">
             <BetsLoader />
           </div>
         </div>
