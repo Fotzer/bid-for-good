@@ -107,11 +107,7 @@ const BetCreator = ({
                         {...field}
                       />
                       <Button type="submit" size="lg" loading={isLoading}>
-                        {isLoading ? (
-                          <Loader className="w-4 h-4" />
-                        ) : (
-                          <Send className="w-4 h-4" />
-                        )}
+                        {!isLoading && <Send className="w-4 h-4" />}
                       </Button>
                     </div>
                   </FormControl>
