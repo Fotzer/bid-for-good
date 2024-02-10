@@ -1,5 +1,7 @@
 # BidForGood
 
+## [Demo link](https://bid-for-good.vercel.app/) 👈
+
 ## Description
 
 Welcome to BidForGood, where generosity meets excitement! BidForGood is an online auction platform that brings together passionate bidders and impactful charities. Explore a world of exclusive items, experiences, and memorabilia, all up for auction. Your bids not only elevate your life with unique treasures but also empower charitable initiatives worldwide. Join us in the joy of giving, one bid at a time!
@@ -20,3 +22,32 @@ At BidForGood, we believe in the transformative power of generosity. Here's why 
   Bid easily with our user-friendly interface. Whether you're a seasoned bidder or new to online auctions, BidForGood makes the process simple and enjoyable.
 
 BidForGood - Bid with Purpose, Make a Difference.
+
+## Demonstration
+
+### Main Page
+
+![main-view](./assets/main-view.png)
+
+### Details Page
+
+![details-view](./assets/details-view.png)
+
+### Profile Page
+
+![profile](./assets/profile.png)
+
+## Run locally
+
+```bash
+cd server
+# Populate .env file inside as specified in .env.example
+npm install
+npx prisma generate
+npm run docker:dev
+# in the second terminal window
+npm run migrate
+
+cd client
+npm run dev
+```
