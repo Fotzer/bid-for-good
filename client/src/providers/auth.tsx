@@ -101,12 +101,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.removeItem("token");
             setTimeout(() => router.push(redirectPath), 1500);
           }
-        } else {
-          router.push(redirectPath);
         }
-      } catch (err) {
-        router.push(redirectPath);
-      }
+      } catch (err) {}
     })();
 
     return () => {
