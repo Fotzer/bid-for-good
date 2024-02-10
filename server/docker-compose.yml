@@ -7,7 +7,7 @@ services:
       - postgresdb
     image: node-app
     environment:
-      - DATABASE_URL=postgresql://user228:secret@postgresdb:5432/mydb?schema=public
+      - DATABASE_URL=${DATABASE_URL}
     ports:
       - '3000:3000'
     volumes:
@@ -19,9 +19,9 @@ services:
     image: postgres
     restart: always
     environment:
-      - POSTGRES_DB=mydb
-      - POSTGRES_USER=user228
-      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - '5433:5432'
     volumes:
@@ -31,7 +31,6 @@ services:
 
 volumes:
   dbdata:
-    driver: local
 
 networks:
   node-network:
