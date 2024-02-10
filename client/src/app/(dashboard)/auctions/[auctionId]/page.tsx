@@ -120,7 +120,9 @@ const AuctionDetailsPage = ({ params }: { params: { auctionId: string } }) => {
             <div className="flex flex-col flex-1">
               <div className="flex lg:max-w-[655px]">
                 <div className="flex-1">
-                  <h2 className="text-4xl font-semibold">{auction?.name}</h2>
+                  <h2 className="text-3xl sm:text-4xl font-semibold truncate text-ellipsis overflow-hidden max-w-[320px] sm:max-w-[400px]">
+                    {auction?.name}
+                  </h2>
                   <p className="text-sm text-muted-foreground">
                     {format(auctionCreatedAt, "MMMM dd, yyyy HH:mm:ss")}
                   </p>

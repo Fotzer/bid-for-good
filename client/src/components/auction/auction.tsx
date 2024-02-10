@@ -75,7 +75,9 @@ const Auction: React.FC<AuctionProps> = ({ auction, userId, token }) => {
     <Card className="flex flex-col justify-between">
       <CardHeader className="flex-row gap-4 items-center justify-between">
         <div>
-          <CardTitle>{auction.name}</CardTitle>
+          <CardTitle className="text-3xl sm:text-4xl font-semibold truncate text-ellipsis overflow-hidden max-w-[320px] sm:max-w-[400px]">
+            {auction.name}
+          </CardTitle>
           <CardDescription>
             {format(auctionCreatedAt, "MMMM dd, yyyy HH:mm:ss")}
           </CardDescription>
