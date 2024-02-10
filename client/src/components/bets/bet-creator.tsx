@@ -30,7 +30,7 @@ const BetCreator = ({
   const NewBetValidator = z.object({
     betValue: z
       .number()
-      .min(minValue, `Bet should be larger than ${minValue}`)
+      .min(minValue + 1, `Bet should be larger than ${minValue}`)
       .max(2147483647, "Bet should be lower than 2147483647"),
   });
 
