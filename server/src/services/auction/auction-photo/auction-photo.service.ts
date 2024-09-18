@@ -1,11 +1,11 @@
+import FreeimageEndpoints from '../../../apis/freeimage/freeimage.endpoints';
+import prisma from '../../../client';
+import BadRequestError from '../../../common/errors/bad-request-error';
 import HTTPError from '../../../common/errors/http-error';
 import InternalServerError from '../../../common/errors/internal-server-error';
-import prisma from '../../../client';
-import FreeimageEndpoints from '../../../apis/freeimage/freeimage.endpoints';
+import NotFoundError from '../../../common/errors/not-found-error';
 import ImageCreateResponseDto from '../../../common/types/apis/freeimage/image.create.dto';
 import verifyToken from '../../../helpers/verify-token';
-import BadRequestError from '../../../common/errors/bad-request-error';
-import NotFoundError from '../../../common/errors/not-found-error';
 import AuctionService from '../auction.service';
 
 class AuctionPhotoService {
@@ -35,7 +35,7 @@ class AuctionPhotoService {
       const createdAuctionPhoto = await prisma.auctionPhoto.create({
         data: {
           auctionId: auctionId,
-          photoLink: data.image.url
+          photoLink: data.image.image.url
         }
       });
 
@@ -57,8 +57,6 @@ class AuctionPhotoService {
         throw new BadRequestError();
       }
 
-      await this.auctionService.get(id);
-
       const formData = new FormData();
       formData.set('source', photo.toString('base64'));
       formData.set('key', process.env.FREEIMAGE_API_KEY!);
@@ -75,7 +73,7 @@ class AuctionPhotoService {
           id: id
         },
         data: {
-          photoLink: data.image.url
+          photoLink: data.image.image.url
         }
       });
 

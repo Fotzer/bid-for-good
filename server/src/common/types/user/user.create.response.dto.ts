@@ -1,8 +1,8 @@
 type UserCreateResponseDto = {
   user: {
-    id: number,
-    name: string | null,
-    email: string
+    id: number;
+    name: string | null;
+    email: string;
   };
   token: string;
 };

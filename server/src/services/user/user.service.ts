@@ -6,7 +6,6 @@ import ConflictError from '../../common/errors/conflict-error';
 import UserErrorMessage from '../../common/errors/messages/user.error.message';
 import jwt from 'jsonwebtoken';
 import UserCreateResponseDto from '../../common/types/user/user.create.response.dto';
-import { expireTimeInMilliseconds } from '../../common/constants/token.constants';
 import BadRequestError from '../../common/errors/bad-request-error';
 import { passwordValidator } from '../../validators/user/password-validator';
 import { ZodError } from 'zod';
@@ -26,7 +25,7 @@ class UserService {
         }
       });
 
-      if(!user) {
+      if (!user) {
         throw new NotFoundError();
       }
 

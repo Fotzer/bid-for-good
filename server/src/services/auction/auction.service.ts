@@ -125,7 +125,7 @@ class AuctionService {
           data: {
             ...auction,
             userId: userId,
-            mainPhoto: data.image.url
+            mainPhoto: data.image.image.url
           }
         });
 
@@ -188,7 +188,7 @@ class AuctionService {
             },
             data: {
               ...auction,
-              mainPhoto: data.image.url
+              mainPhoto: data.image.image.url
             }
           });
         } else {

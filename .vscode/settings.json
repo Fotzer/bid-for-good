@@ -1,0 +1,28 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "prettier.useTabs": false,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/.vscode": true,
+    "**/__pycache__": true
+  },
+  "eslint.validate": ["javascript"],
+  "cSpell.words": [
+    "favourite",
+    "gridlines",
+    "iban",
+    "Licence",
+    "nonselected",
+    "stablecoins",
+    "wagmi"
+  ],
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
+}

@@ -1,6 +1,8 @@
 type ImageCreateResponseDto = {
   image: {
-    url: string;
+    image: {
+      url: string;
+    };
   };
 };
 
